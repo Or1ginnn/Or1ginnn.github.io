@@ -6,16 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="1. 题目链接Leetcode 02. 字母异位词分组 2. 题目描述给你一个字符串数组，请你将 字母异位词 组合在一起。可以按任意顺序返回结果列表。 3. 笔记 d &#x3D; defaultdict(list) 语法糖，相当于初始化 dict 的值全部为 list sroted(str)会将 str 中字符排序，字符级：&#x3D;&#x3D;如：s &#x3D; “eat”, sorted(s) &amp;">
+    <meta name="description" content="1. 题目链接Leetcode 02. 字母异位词分组 2. 题目描述给你一个字符串数组，请你将 字母异位词 组合在一起。可以按任意顺序返回结果列表。 3. 笔记 d &#x3D; defaultdict(list) 语法糖，相当于初始化 dict 的值全部为 list sroted(str)会将 str 中字符排序，字符级：&#x3D;&#x3D;如：s &#x3D; “eat”, sorted(s)">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hot100 - 02 - 字母异位词分组">
+<meta property="og:title" content="hot100-02-字母异位词分组">
 <meta property="og:url" content="https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/index.html">
 <meta property="og:site_name" content="Or1gin的博客">
-<meta property="og:description" content="1. 题目链接Leetcode 02. 字母异位词分组 2. 题目描述给你一个字符串数组，请你将 字母异位词 组合在一起。可以按任意顺序返回结果列表。 3. 笔记 d &#x3D; defaultdict(list) 语法糖，相当于初始化 dict 的值全部为 list sroted(str)会将 str 中字符排序，字符级：&#x3D;&#x3D;如：s &#x3D; “eat”, sorted(s) &amp;">
+<meta property="og:description" content="1. 题目链接Leetcode 02. 字母异位词分组 2. 题目描述给你一个字符串数组，请你将 字母异位词 组合在一起。可以按任意顺序返回结果列表。 3. 笔记 d &#x3D; defaultdict(list) 语法糖，相当于初始化 dict 的值全部为 list sroted(str)会将 str 中字符排序，字符级：&#x3D;&#x3D;如：s &#x3D; “eat”, sorted(s)">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/1.png">
-<meta property="article:published_time" content="2026-04-01T07:55:10.000Z">
-<meta property="article:modified_time" content="2026-04-01T09:15:09.074Z">
+<meta property="article:published_time" content="2026-04-01T09:17:21.000Z">
+<meta property="article:modified_time" content="2026-04-01T09:18:03.222Z">
 <meta property="article:author" content="Or1ginnn">
 <meta property="article:tag" content="中等">
 <meta property="article:tag" content="哈希表">
@@ -40,7 +40,7 @@
       
     
     <!-- title -->
-    <title>hot100 - 02 - 字母异位词分组</title>
+    <title>hot100-02-字母异位词分组</title>
     <!-- async scripts -->
     <!-- Google Analytics -->
 
@@ -85,10 +85,8 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" aria-label="上一篇" href="/2026/04/01/hot100-03-%E6%9C%80%E9%95%BF%E8%BF%9E%E7%BB%AD%E5%BA%8F%E5%88%97/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
-        
-        <li><a class="icon" aria-label="下一篇" href="/2026/04/01/hot100-01-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="下一篇" href="/2026/04/01/hot100-03-%E6%9C%80%E9%95%BF%E8%BF%9E%E7%BB%AD%E5%BA%8F%E5%88%97/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -102,16 +100,16 @@
     <div id="share" style="display: none">
       <ul>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&text=hot100 - 02 - 字母异位词分组"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100 - 02 - 字母异位词分组"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&is_video=false&description=hot100 - 02 - 字母异位词分组"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=hot100 - 02 - 字母异位词分组&body=Check out this article: https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100 - 02 - 字母异位词分组"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100 - 02 - 字母异位词分组"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100 - 02 - 字母异位词分组"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100 - 02 - 字母异位词分组"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&name=hot100 - 02 - 字母异位词分组&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&t=hot100 - 02 - 字母异位词分组"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&text=hot100-02-字母异位词分组"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100-02-字母异位词分组"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&is_video=false&description=hot100-02-字母异位词分组"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=hot100-02-字母异位词分组&body=Check out this article: https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100-02-字母异位词分组"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100-02-字母异位词分组"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100-02-字母异位词分组"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100-02-字母异位词分组"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&name=hot100-02-字母异位词分组&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&t=hot100-02-字母异位词分组"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -131,7 +129,7 @@
   <header>
     
     <h1 class="posttitle p-name" itemprop="name headline">
-        hot100 - 02 - 字母异位词分组
+        hot100-02-字母异位词分组
     </h1>
 
 
@@ -143,7 +141,7 @@
       
     <div class="postdate">
       
-        <time datetime="2026-04-01T07:55:10.000Z" class="dt-published" itemprop="datePublished">2026-04-01</time>
+        <time datetime="2026-04-01T09:17:21.000Z" class="dt-published" itemprop="datePublished">2026-04-01</time>
         
       
     </div>
@@ -163,7 +161,8 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h1 id="1-题目链接"><a href="#1-题目链接" class="headerlink" title="1. 题目链接"></a>1. 题目链接</h1><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/group-anagrams">Leetcode 02. 字母异位词分组</a></p>
+    <hr>
+<h1 id="1-题目链接"><a href="#1-题目链接" class="headerlink" title="1. 题目链接"></a>1. 题目链接</h1><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/group-anagrams">Leetcode 02. 字母异位词分组</a></p>
 <h1 id="2-题目描述"><a href="#2-题目描述" class="headerlink" title="2. 题目描述"></a>2. 题目描述</h1><p>给你一个字符串数组，请你将 字母异位词 组合在一起。可以按任意顺序返回结果列表。<br><img src="/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/1.png"></p>
 <h1 id="3-笔记"><a href="#3-笔记" class="headerlink" title="3. 笔记"></a>3. 笔记</h1><ul>
 <li><code>d = defaultdict(list)</code> 语法糖，相当于初始化 dict 的值全部为 list</li>
@@ -204,16 +203,16 @@
     <div id="share-footer" style="display: none">
       <ul>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&text=hot100 - 02 - 字母异位词分组"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100 - 02 - 字母异位词分组"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&is_video=false&description=hot100 - 02 - 字母异位词分组"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=hot100 - 02 - 字母异位词分组&body=Check out this article: https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100 - 02 - 字母异位词分组"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100 - 02 - 字母异位词分组"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100 - 02 - 字母异位词分组"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100 - 02 - 字母异位词分组"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&name=hot100 - 02 - 字母异位词分组&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&t=hot100 - 02 - 字母异位词分组"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&text=hot100-02-字母异位词分组"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100-02-字母异位词分组"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&is_video=false&description=hot100-02-字母异位词分组"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=hot100-02-字母异位词分组&body=Check out this article: https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100-02-字母异位词分组"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100-02-字母异位词分组"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100-02-字母异位词分组"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&title=hot100-02-字母异位词分组"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&name=hot100-02-字母异位词分组&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://or1ginnn.github.io/2026/04/01/hot100-02-%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/&t=hot100-02-字母异位词分组"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
