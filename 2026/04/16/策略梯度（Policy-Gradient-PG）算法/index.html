@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="1. 核心思想 直接优化策略 1.1 强化学习基础回顾  智能体（Agent）：与环境交互、学习策略 环境（Environment）：提出状态（State）、奖励（Reward） 策略（Policy）：状态 -&gt; 动作的映射规则  确定性策略：π(a|s) -&gt; 直接输出动作 随机性策略：πθ(a|s) -&gt; 输出动作概率分布（PG 常用） ### 1.2 策略的本质   在强化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="策略梯度（Policy Gradient, PG）算法">
+<meta property="og:url" content="https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="Or1gin的博客">
+<meta property="og:description" content="1. 核心思想 直接优化策略 1.1 强化学习基础回顾  智能体（Agent）：与环境交互、学习策略 环境（Environment）：提出状态（State）、奖励（Reward） 策略（Policy）：状态 -&gt; 动作的映射规则  确定性策略：π(a|s) -&gt; 直接输出动作 随机性策略：πθ(a|s) -&gt; 输出动作概率分布（PG 常用） ### 1.2 策略的本质   在强化">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-04-16T03:25:58.000Z">
+<meta property="article:modified_time" content="2026-04-21T12:13:02.660Z">
+<meta property="article:author" content="Or1ginnn">
+<meta property="article:tag" content="PG">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>策略梯度（Policy Gradient, PG）算法</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- Math handled by Pandoc + MathJax -->
+    <style>
+      .math { font-family: 'Times New Roman', Times, serif; }
+      .math.display { display: block; margin: 1em 0; text-align: center; }
+      .math.inline { display: inline; }
+      .math sub, .math sup { font-size: 0.75em; }
+      mark { background-color: yellow; padding: 0 2px; }
+    </style>
+    <!-- MathJax for remaining $$ formulas -->
+    <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">项目</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2026/04/16/hot100-23-%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2026/04/14/hot100-22-%E7%9B%B8%E4%BA%A4%E9%93%BE%E8%A1%A8/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&text=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&is_video=false&description=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=策略梯度（Policy Gradient, PG）算法&body=Check out this article: https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&name=策略梯度（Policy Gradient, PG）算法&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&t=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.</span> <span class="toc-text">1. 核心思想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 强化学习基础回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E6%84%8F%E4%B9%89"><span class="toc-number">1.2.</span> <span class="toc-text">1.3 参数化意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#policy-gradient%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.3.</span> <span class="toc-text">1.4 Policy Gradient的核心思想</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF"><span class="toc-number">2.</span> <span class="toc-text">2. 优势</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#policy-gradient-%E5%AE%9A%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">3. Policy Gradient 定理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 推导过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5g_t"><span class="toc-number">4.</span> <span class="toc-text">4. 折扣未来回报Gt</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5%E6%95%B0%E5%AD%A6%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">4. 1 折扣未来回报数学定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%8A%98%E6%89%A3%E5%9B%A0%E5%AD%90"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 为什么需要折扣因子</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reinforce%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">5. REINFORCE算法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#reinforce%E6%9B%B4%E6%96%B0%E5%85%AC%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 REINFORCE更新公式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0vs%E4%B8%8E%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.</span> <span class="toc-text">6. 价值函数（V(s)）与贝尔曼方程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 状态价值函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%9D%97%E7%90%86%E8%A7%A3%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 分块理解贝尔曼方程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E7%BA%BF-baseline"><span class="toc-number">7.</span> <span class="toc-text">7. 基线 Baseline</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        策略梯度（Policy Gradient, PG）算法
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Or1ginnn</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2026-04-16T03:25:58.000Z" class="dt-published" itemprop="datePublished">2026-04-16</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/PG/" rel="tag">PG</a>, <a class="p-category" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag">学习笔记</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="核心思想">1. 核心思想</h1>
+<p><strong>直接优化策略</strong></p>
+<h3 id="强化学习基础回顾">1.1 强化学习基础回顾</h3>
+<ul>
+<li>智能体（Agent）：与环境交互、学习策略</li>
+<li>环境（Environment）：提出状态（State）、奖励（Reward）</li>
+<li>策略（Policy）：状态 -&gt; 动作的映射规则
+<ul>
+<li>确定性策略：<span
+class="math inline"><em>π</em>(<em>a</em>|<em>s</em>)</span> -&gt;
+直接输出动作</li>
+<li>随机性策略：<span
+class="math inline"><em>π</em><sub><em>θ</em></sub>(<em>a</em>|<em>s</em>)</span>
+-&gt; 输出动作概率分布（PG 常用） ### 1.2 策略的本质</li>
+</ul></li>
+</ul>
+<p>在强化学习中，策略定义了智能体在状态 <span
+class="math inline"><em>s</em></span> 时选择动作 <span
+class="math inline"><em>a</em></span> 的规则，通常分为：
+<strong>确定性策略</strong> 以及 <strong>随机性策略</strong></p>
+<h3 id="参数化意义">1.3 参数化意义</h3>
+<p>通过可学习参数 <span class="math inline"><em>θ</em></span>
+（如神经网络的权重）显示表示策略，使得梯度上升算法可以直接调整参数以优化长期回报。传统方法（如
+Q-Learning）间接优化值函数，而策略梯度直接对策略建模，自然支持复杂动作空间（如连续、高维动作）。</p>
+<h3 id="policy-gradient的核心思想">1.4 Policy Gradient的核心思想</h3>
+<p>与其绕道价值函数，不如直接对策略进行参数化，然后通过梯度上升来优化它！</p>
+<p><span
+class="math inline"><em>π</em><sub><em>θ</em></sub>(<em>a</em>|<em>s</em>)</span>
+表示一个由参数 <span class="math inline"><em>θ</em></span>
+定义的策略，它输出在状态 <span class="math inline"><em>s</em></span>
+下采取动作 <span class="math inline"><em>a</em></span>
+的概率。目标是：<span
+class="math display">max <em>J</em>(<em>θ</em>) = 𝔼<sub><em>τ</em> ∼ <em>π</em><sub><em>θ</em></sub></sub></span>其中
+<span class="math inline"><em>τ</em></span> 是一条轨迹，<span
+class="math inline"><em>R</em>(<em>τ</em>)</span>
+是这条轨迹的总奖励。</p>
+<h1 id="优势">2. 优势</h1>
+<ol type="1">
+<li><strong>==优势一：天然支持连续动作空间==</strong>：策略网络可以直接输出连续动作的分布参数（比如高斯分布的均值和方差），从中采样即可得到动作。
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mean, <span class="built_in">std</span> = policy_network(state)</span><br><span class="line">action = Normal(mean, <span class="built_in">std</span>).sample()</span><br></pre></td></tr></table></figure></li>
+<li>==<strong>优势二：可以学习随机策略</strong>==：策略直接输出动作的概率分布，天然支持随机性。</li>
+<li>==<strong>优势三：更好的收敛性质</strong>==：策略参数的小变化只会导致策略分布的小变化，使得优化过程更加平滑稳定。</li>
+<li>==<strong>优势四：端到端优化</strong>==：直接优化我们真正关心的目标——累积奖励，而不是间接地通过简直函数。</li>
+</ol>
+<h1 id="policy-gradient-定理">3. Policy Gradient 定理</h1>
+<h2 id="推导过程">3.1 推导过程</h2>
+<p>目标函数：<span
+class="math display">max <em>J</em>(<em>θ</em>) = 𝔼<sub><em>τ</em> ∼ <em>π</em><sub><em>θ</em></sub></sub>[<em>R</em>(<em>τ</em>)] = ∑<sub><em>τ</em></sub><em>P</em>(<em>τ</em>|<em>θ</em>)<em>R</em>(<em>τ</em>)</span>对
+<span class="math inline"><em>θ</em></span> 求梯度： <span
+class="math display">∇<sub><em>θ</em></sub><em>J</em>(<em>θ</em>) = ∑<sub><em>τ</em></sub>∇<sub><em>θ</em></sub><em>P</em>(<em>τ</em>|<em>θ</em>)<em>R</em>(<em>τ</em>)</span>
+这里取巧使用<strong>对数导数</strong>：<span
+class="math display">∇<sub><em>θ</em></sub><em>P</em>(<em>τ</em>|<em>θ</em>) = <em>P</em>(<em>τ</em>|<em>θ</em>)∇<sub><em>θ</em></sub>log <em>P</em>(<em>τ</em>|<em>θ</em>)</span>
+代入得：<span
+class="math display">∇<sub><em>θ</em></sub><em>J</em>(<em>θ</em>) = ∑<sub><em>τ</em></sub><em>P</em>(<em>τ</em>|<em>θ</em>)∇<sub><em>θ</em></sub>log <em>P</em>(<em>τ</em>|<em>θ</em>)<em>R</em>(<em>τ</em>) = 𝔼<sub><em>τ</em> ∼ <em>π</em><sub><em>θ</em></sub></sub>[∇<sub><em>θ</em></sub>log <em>P</em>(<em>τ</em>|<em>θ</em>)<em>R</em>(<em>τ</em>)]</span>接下来展开<span
+class="math inline">log <em>P</em>(<em>τ</em>|<em>θ</em>)</span>：<span
+class="math display">$$\log P(\tau | \theta) = \log p(s_0) +
+\sum_{t=0}^{T-1} [\log \pi_\theta (a_t|s_t) + \log p (s_{t + 1} | s_t,
+a_t)]$$</span>关键观察：<span
+class="math inline"><em>p</em>(<em>s</em><sub>0</sub>)</span> 和 <span
+class="math inline"><em>p</em>(<em>s</em><sub><em>t</em> + 1</sub>|<em>s</em><sub><em>t</em></sub>, <em>a</em><sub><em>t</em></sub>)</span>
+是环境动态，与 <span class="math inline"><em>θ</em></span> 无关！ 因此：
+<span class="math display">$$\nabla_\theta \log P (\tau | \theta) =
+\sum_{t = 0}^{T - 1} \nabla_\theta \log \pi_\theta(a_t |
+s_t)$$</span>==最终形式==：Policy Gradinet 定理：<span
+class="math display">$$\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim
+\pi_\theta}[\sum_{t=0}^{T-1} \nabla_\theta \log \pi_\theta
+(a_t|s_t)R(\tau)]$$</span>结果太美了（<a
+target="_blank" rel="noopener" href="https://blog.csdn.net/rmysjm/article/details/155713409">原文</a>），&gt;
+1. 用当前策略采样轨迹 2. 计算每个动作的<span
+class="math inline">∇<sub><em>θ</em></sub>log <em>π</em><sub><em>θ</em></sub>(<em>a</em><sub><em>t</em></sub>|<em>s</em><sub><em>t</em></sub>)</span>
+3. 用轨迹奖励加权。</p>
+<p><strong><em>物理意义</em></strong>：<span
+class="math display">$$\nabla_\theta \log \pi_\theta(a_t| s_t) =
+\frac{\nabla_\theta \pi
+(a_t|b_t)}{\pi(a_t|s_t)}$$</span>可理解为：==<strong>动作概率的相对变化率</strong>==，即：
+- 高概率动作：梯度更新幅度小 - 低概率动作：地图更新幅度大
+<strong>权重自适应机制</strong>：<span
+class="math display">$$\triangle\theta \propto \frac{\nabla_\theta \pi
+(a_t|b_t)}{\pi(a_t|s_t)} \cdot G_t$$</span>本质是重要性加权更新： -
+分母自动调节更新步长 - 避免高概率动作主导优化过程</p>
+<p><em>原文说的很美，博主理解1h才理解这一套逻辑，对于博主还是太复杂。下面附一段豆包写的简略代码：</em>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 1. 策略网络：输入3维 → 输出2个动作（左/右）</span></span><br><span class="line"><span class="comment"># 对应公式：πθ(a|s)</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line">policy = nn.Linear(</span><br><span class="line">    in_features=<span class="number">3</span>,   <span class="comment"># 输入：状态是 3维 one-hot 向量</span></span><br><span class="line">    out_features=<span class="number">2</span>   <span class="comment"># 输出：2个动作（左、右）的概率</span></span><br><span class="line">)</span><br><span class="line">optimizer = optim.Adam(policy.parameters(), lr=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 2. 游戏状态定义（3维！）</span></span><br><span class="line"><span class="comment"># 必须3个数字，才能输入 Linear(3,2)</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line">STATE_1 = torch.tensor([<span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>])  <span class="comment"># 状态1 → 3维</span></span><br><span class="line">STATE_2 = torch.tensor([<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">0.0</span>])  <span class="comment"># 状态2 → 3维</span></span><br><span class="line">STATE_3 = torch.tensor([<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>])  <span class="comment"># 状态3 → 3维</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 3. 让智能体玩一局游戏（采样轨迹 τ）</span></span><br><span class="line"><span class="comment"># 对应公式：τ ~ πθ</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line">trajectory = []</span><br><span class="line">total_reward = <span class="number">0</span></span><br><span class="line">s = STATE_1  <span class="comment"># 初始状态</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">    <span class="comment"># 前向传播：输入3维状态 → 输出动作概率</span></span><br><span class="line">    logits = policy(s)</span><br><span class="line">    prob = torch.softmax(logits, dim=-<span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 选动作（0=左，1=右）</span></span><br><span class="line">    a = torch.multinomial(prob, <span class="number">1</span>).item()</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 奖励：选右=得分，选左=不得分</span></span><br><span class="line">    r = <span class="number">1</span> <span class="keyword">if</span> a == <span class="number">1</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">    total_reward += r</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 保存：(状态, 动作) → 后面算梯度用</span></span><br><span class="line">    trajectory.append((s, a))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 切换状态（简化）</span></span><br><span class="line">    s = STATE_2 <span class="keyword">if</span> a == <span class="number">1</span> <span class="keyword">else</span> STATE_3</span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 4. 策略梯度核心代码！</span></span><br><span class="line"><span class="comment"># 对应公式：∇θ J(θ) = E[ ∑ ∇θ logπθ(a|s) * R(τ) ]</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line">optimizer.zero_grad()</span><br><span class="line">loss = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 遍历每一步动作</span></span><br><span class="line"><span class="keyword">for</span> s, a <span class="keyword">in</span> trajectory:</span><br><span class="line">    <span class="comment"># 计算 log πθ(a|s)</span></span><br><span class="line">    logits = policy(s)</span><br><span class="line">    log_prob = torch.log_softmax(logits, dim=-<span class="number">1</span>)[a]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 公式核心：log概率梯度 × 总奖励</span></span><br><span class="line">    <span class="comment"># ∇θ logπθ * R(τ)</span></span><br><span class="line">    loss += -log_prob * total_reward  <span class="comment"># 负号 = 梯度上升</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 平均 → 对应期望 E</span></span><br><span class="line">loss = loss / <span class="built_in">len</span>(trajectory)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 反向传播 → 更新参数 θ</span></span><br><span class="line">loss.backward()</span><br><span class="line">optimizer.step()</span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 输出结果</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;这局总分 R(τ) = <span class="subst">&#123;total_reward&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;更新完成！智能体学会优先选【右】&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>==注意PG只是思想，算法思想，后续介绍一下PG的最简单的落地算法：REINFORCE==</p>
+<h1 id="折扣未来回报g_t">4. 折扣未来回报<span
+class="math inline"><em>G</em><sub><em>t</em></sub></span></h1>
+<p>定义：智能体在某个时间步获得的即时奖励，加上未来所有奖励的折扣奖励总和，用于衡量当前状态或动作的长期价值。</p>
+<h2 id="折扣未来回报数学定义">4. 1 折扣未来回报数学定义</h2>
+<p>回报 <span class="math inline"><em>G</em><sub><em>T</em></sub></span>
+是从时间步（t）开始的所有的未来奖励的折扣和：<span
+class="math display">$$G_t = R_t + \gamma R_{t+1} + \gamma^2R_{t+2} +
+\cdots = \sum_{k=0}^{\infty} \gamma^kR_{t+k}$$</span>其中： - <span
+class="math inline"><em>R</em><sub><em>t</em></sub></span>: 时间步 t
+的即时奖励 - <span
+class="math inline"><em>γ</em></span>：折扣因子，取值范围<span
+class="math inline"><em>γ</em> ∈ [0, 1]</span>，用于平衡即时奖励与未来奖励的重要性
+## 4.2 核心思想</p>
+<ul>
+<li>即时奖励（<span
+class="math inline"><em>R</em><sub><em>t</em></sub></span>）：当前Action带来的直接受益</li>
+<li>未来奖励的折扣：未来所有奖励按指数衰减加权求和，体现长期策略的价值。
+<ul>
+<li><span class="math inline"><em>γ</em></span>
+越接近1：模型越重视长期受益（远视）</li>
+<li><span class="math inline"><em>γ</em></span>
+越接近0：模型越关注短期受益（近视）</li>
+</ul></li>
+</ul>
+<h2 id="为什么需要折扣因子">4.2 为什么需要折扣因子</h2>
+<pre><code>1. 数学收敛性：无限时间步的奖励求和可能发散，折扣因子确保无穷级数收敛。
+2. 不确定性：未来奖励的预测通常不可靠，折扣降低了远期奖励的权重。
+3. 实际意义：人类和动物行为也更倾向于即时回报（如“延迟满足”需要更高激励）。</code></pre>
+<h1 id="reinforce算法原理">5. REINFORCE算法原理</h1>
+<h2 id="reinforce更新公式">5.1 REINFORCE更新公式</h2>
+<p><span
+class="math display">△<em>θ</em> = <em>α</em><em>γ</em><sup><em>t</em></sup><em>G</em><sub><em>t</em></sub>∇<sub><em>θ</em></sub>log <em>π</em><sub><em>θ</em></sub>(<em>a</em><sub><em>t</em></sub>|<em>s</em><sub><em>t</em></sub>)</span>其中<span
+class="math inline">$G_t=\sum_{k=t}^{T}\gamma^{k-t}r_k$</span>
+推导过程直接问LLM。 伪代码： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Initialize θ arbitrarily</span><br><span class="line"><span class="keyword">for</span> episode <span class="keyword">in</span> <span class="built_in">range</span>(N_episodes):</span><br><span class="line">    Generate trajectory τ ~ π_θ</span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(τ)):</span><br><span class="line">        G_t = ∑_&#123;k=t&#125;^&#123;T&#125; γ^&#123;k-t&#125; r_k</span><br><span class="line">        θ ← θ + α γ^t G_t ∇_θ log π_θ(a_t|s_t)</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<h1 id="价值函数vs与贝尔曼方程">6. 价值函数（<span
+class="math inline"><em>V</em>(<em>s</em>)</span>）与贝尔曼方程</h1>
+<h2 id="状态价值函数">6.1 状态价值函数</h2>
+<p>定义：从状态 <span class="math inline"><em>s</em></span>
+出发，遵循策略 <span class="math inline"><em>π</em></span>
+的期望回报。它衡量了处于某个状态的“长期价值”。<span
+class="math display">$$V^\pi(s) = \mathbb{E}[G_t|S_t = s] =
+\mathbb{E}_\pi[\sum_{k=0}^{\infty} \gamma^k R_{t+k+1} | S_t =
+s]$$</span><strong>贝尔曼方程</strong>的推导： 将 <span
+class="math inline"><em>G</em><sub><em>t</em></sub></span>
+递归分解为“即时奖励”与“折扣后的未来回报”：<span
+class="math display"><em>V</em><sup><em>π</em></sup>(<em>s</em>) = ∑<sub><em>a</em></sub><em>π</em>(<em>a</em>|<em>s</em>)∑<sub><em>s</em><sup>′</sup>, <em>r</em></sub><em>P</em>(<em>s</em><sup>′</sup>, <em>r</em>|<em>s</em>, <em>a</em>)[<em>r</em> + <em>γ</em><em>V</em><sup><em>π</em></sup>(<em>s</em><sup>′</sup>)]</span>
+==通俗理解：当前状态的价值 = (即时期望奖励) +
+(折扣后的下一状态期望价值)==</p>
+<h2 id="分块理解贝尔曼方程">6.2 分块理解贝尔曼方程</h2>
+<ol type="1">
+<li>最外层：按策略选动作 <span
+class="math display">∑<sub><em>a</em></sub><em>π</em>(<em>a</em>|<em>s</em>)</span></li>
+</ol>
+<ul>
+<li><span
+class="math inline"><em>π</em>(<em>a</em>|<em>s</em>):</span>在状态
+<span class="math inline"><em>s</em></span> 下，按策略选动作 <span
+class="math inline"><em>a</em></span> 的概率</li>
+<li>求和：把所有可能动作的贡献加起来</li>
+<li>意思：对所有可能选的动作，按概率加权平均</li>
+</ul>
+<ol start="2" type="1">
+<li>第二层：按环境转移概率看下一步 <span
+class="math display">∑<sub><em>s</em><sup>′</sup>, <em>r</em></sub><em>P</em>(<em>s</em><sup>′</sup>, <em>r</em>|<em>s</em>, <em>a</em>)</span></li>
+</ol>
+<ul>
+<li><span
+class="math inline"><em>P</em>(<em>s</em><sup>′</sup>, <em>r</em>|<em>s</em>, <em>a</em>):</span>在状态
+<span class="math inline"><em>s</em></span> 做动作 <span
+class="math inline"><em>a</em></span> ，转移到 <span
+class="math inline"><em>s</em><sup>′</sup></span> 并拿到奖励 <span
+class="math inline"><em>r</em></span> 的概率</li>
+<li>求和：把所有可能的下一个状态和奖励加起来</li>
+<li>意思：<strong>对所有kennel的「下一个状态 +
+奖励」，按环境概率加权平均</strong></li>
+</ul>
+<ol start="3" type="1">
+<li>最里面的核心：贝尔曼递推关系 <span
+class="math display">[<em>r</em> + <em>γ</em><em>V</em><sup><em>π</em></sup>(<em>s</em><sup>′</sup>)]</span></li>
+</ol>
+<ul>
+<li><span
+class="math inline"><em>r</em>:</span>当前步拿到的即时奖励</li>
+<li><span
+class="math inline"><em>V</em><sup><em>π</em></sup>(<em>s</em><sup>′</sup>):</span>下一个状态
+<span class="math inline"><em>s</em><sup>′</sup></span> 的价值函数</li>
+<li><span
+class="math inline"><em>γ</em>:</span>折扣因子，把未来价值打个折</li>
+<li>意思：<strong>当前的总价值=现在拿的钱 +
+未来可能拿的钱的期望</strong></li>
+</ul>
+<h1 id="基线-baseline">7. 基线 Baseline</h1>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/about/">关于</a></li>
+        
+          <li><a href="/archives/">归档</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">项目</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.</span> <span class="toc-text">1. 核心思想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 强化学习基础回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E6%84%8F%E4%B9%89"><span class="toc-number">1.2.</span> <span class="toc-text">1.3 参数化意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#policy-gradient%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.3.</span> <span class="toc-text">1.4 Policy Gradient的核心思想</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF"><span class="toc-number">2.</span> <span class="toc-text">2. 优势</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#policy-gradient-%E5%AE%9A%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">3. Policy Gradient 定理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 推导过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5g_t"><span class="toc-number">4.</span> <span class="toc-text">4. 折扣未来回报Gt</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5%E6%95%B0%E5%AD%A6%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">4. 1 折扣未来回报数学定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%8A%98%E6%89%A3%E5%9B%A0%E5%AD%90"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 为什么需要折扣因子</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reinforce%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">5. REINFORCE算法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#reinforce%E6%9B%B4%E6%96%B0%E5%85%AC%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 REINFORCE更新公式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0vs%E4%B8%8E%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.</span> <span class="toc-text">6. 价值函数（V(s)）与贝尔曼方程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 状态价值函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%9D%97%E7%90%86%E8%A7%A3%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 分块理解贝尔曼方程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E7%BA%BF-baseline"><span class="toc-number">7.</span> <span class="toc-text">7. 基线 Baseline</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&text=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&is_video=false&description=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=策略梯度（Policy Gradient, PG）算法&body=Check out this article: https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&name=策略梯度（Policy Gradient, PG）算法&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&t=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2026
+    Or1ginnn
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">项目</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
