@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="1. 题目链接Leetcode 11. 滑动窗口最大值 2. 题解及代码这道题难度比较大，学习使用双端队列：&#x3D;&#x3D;from collections import deque   q &#x3D; deque()&#x3D;&#x3D; 思路：使用双端队列，队列中降序排列，删除非当前窗口的前面元素（由于使用for循环，一次性只进入一个元素，因此在删除时只需要单独判断队头是否在当前窗">
+    <meta name="description" content="1. 题目链接 Leetcode 11. 滑动窗口最大值 2. 题解及代码 这道题难度比较大，学习使用双端队列：from collections import deque   q &#x3D; deque() 思路： 使用双端队列，队列中降序排列，删除非当前窗口的前面元素（由于使用for循环，一次性只进入一个元素，因此在删除时只需要单独判断队头是否在当前窗口外即可），队头元素对应当前窗口的最大值，直接在an">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hot100 - 11 - 滑动窗口最大值">
 <meta property="og:url" content="https://or1ginnn.github.io/2026/04/09/hot100-11-%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%80%E5%A4%A7%E5%80%BC/index.html">
 <meta property="og:site_name" content="Or1gin的博客">
-<meta property="og:description" content="1. 题目链接Leetcode 11. 滑动窗口最大值 2. 题解及代码这道题难度比较大，学习使用双端队列：&#x3D;&#x3D;from collections import deque   q &#x3D; deque()&#x3D;&#x3D; 思路：使用双端队列，队列中降序排列，删除非当前窗口的前面元素（由于使用for循环，一次性只进入一个元素，因此在删除时只需要单独判断队头是否在当前窗">
+<meta property="og:description" content="1. 题目链接 Leetcode 11. 滑动窗口最大值 2. 题解及代码 这道题难度比较大，学习使用双端队列：from collections import deque   q &#x3D; deque() 思路： 使用双端队列，队列中降序排列，删除非当前窗口的前面元素（由于使用for循环，一次性只进入一个元素，因此在删除时只需要单独判断队头是否在当前窗口外即可），队头元素对应当前窗口的最大值，直接在an">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-04-09T04:21:24.000Z">
 <meta property="article:modified_time" content="2026-04-09T05:55:35.134Z">
@@ -53,21 +53,12 @@
 
     <!-- persian styles -->
     
+    <!-- KaTeX CSS for math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <!-- rss -->
     
     
 	<!-- mathjax -->
-	
-		<script type="text/x-mathjax-config">
-		  MathJax.Hub.Config({
-			tex2jax: {
-			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-			  inlineMath: [['$','$']],
-			  displayMath: [['$$','$$'], ['\\[','\\]']]
-			}
-		  });
-		</script>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
 	
 <meta name="generator" content="Hexo 8.1.1"></head>
 
@@ -128,7 +119,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E9%A2%98%E8%A7%A3%E5%8F%8A%E4%BB%A3%E7%A0%81"><span class="toc-number">2.</span> <span class="toc-text">2. 题解及代码</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 题解及代码</span></a></li></ol>
       </div>
     
   </span>
@@ -173,9 +164,12 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h1 id="1-题目链接"><a href="#1-题目链接" class="headerlink" title="1. 题目链接"></a>1. 题目链接</h1><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/sliding-window-maximum">Leetcode 11. 滑动窗口最大值</a></p>
-<h1 id="2-题解及代码"><a href="#2-题解及代码" class="headerlink" title="2. 题解及代码"></a>2. 题解及代码</h1><p>这道题难度比较大，学习使用双端队列：&#x3D;&#x3D;from collections import deque   q &#x3D; deque()&#x3D;&#x3D;</p>
-<p>思路：<br>使用双端队列，队列中降序排列，删除非当前窗口的前面元素（由于使用for循环，一次性只进入一个元素，因此在删除时只需要单独判断队头是否在当前窗口外即可），队头元素对应当前窗口的最大值，直接在ans中保存</p>
+    <h1>1. 题目链接</h1>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/sliding-window-maximum">Leetcode 11. 滑动窗口最大值</a></p>
+<h1>2. 题解及代码</h1>
+<p>这道题难度比较大，学习使用双端队列：<mark>from collections import deque   q = deque()</mark></p>
+<p>思路：
+使用双端队列，队列中降序排列，删除非当前窗口的前面元素（由于使用for循环，一次性只进入一个元素，因此在删除时只需要单独判断队头是否在当前窗口外即可），队头元素对应当前窗口的最大值，直接在ans中保存</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">maxSlidingWindow</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">        ans = [<span class="number">0</span>] * (<span class="built_in">len</span>(nums) - k + <span class="number">1</span>)</span><br><span class="line">        q = deque()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i, x <span class="keyword">in</span> <span class="built_in">enumerate</span>(nums):</span><br><span class="line">            <span class="keyword">while</span> q <span class="keyword">and</span> nums[q[-<span class="number">1</span>]] &lt;= x:</span><br><span class="line">                q.pop()</span><br><span class="line">            q.append(i)</span><br><span class="line"></span><br><span class="line">            left = i - k + <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> q[<span class="number">0</span>] &lt; left:</span><br><span class="line">                q.popleft()</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> left &gt;= <span class="number">0</span>:</span><br><span class="line">                ans[left] = nums[q[<span class="number">0</span>]]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
   </div>
 </article>
@@ -203,7 +197,7 @@
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E9%A2%98%E8%A7%A3%E5%8F%8A%E4%BB%A3%E7%A0%81"><span class="toc-number">2.</span> <span class="toc-text">2. 题解及代码</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 题解及代码</span></a></li></ol>
       </div>
     
 

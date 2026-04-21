@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="想法只是学习的一些碎碎念，记录在自己新创建的博客上❤️希望今天就是一个好的开始！ 1. 题目链接LeetCode 01. 两数之和  2. 题目描述给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出和为目标值的那两个整数，并返回它们的数组下标。 注意：你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。 你可以按任意顺序返回答案。 3. 代">
+    <meta name="description" content="想法 只是学习的一些碎碎念，记录在自己新创建的博客上❤️ 希望今天就是一个好的开始！ 1. 题目链接 LeetCode 01. 两数之和 2. 题目描述 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出和为目标值的那两个整数，并返回它们的数组下标。 注意：你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。 你可以按任意顺序返回答案。 3">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hot100 - 01 - 两数之和">
 <meta property="og:url" content="https://or1ginnn.github.io/2026/04/01/hot100-01-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/index.html">
 <meta property="og:site_name" content="Or1gin的博客">
-<meta property="og:description" content="想法只是学习的一些碎碎念，记录在自己新创建的博客上❤️希望今天就是一个好的开始！ 1. 题目链接LeetCode 01. 两数之和  2. 题目描述给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出和为目标值的那两个整数，并返回它们的数组下标。 注意：你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。 你可以按任意顺序返回答案。 3. 代">
+<meta property="og:description" content="想法 只是学习的一些碎碎念，记录在自己新创建的博客上❤️ 希望今天就是一个好的开始！ 1. 题目链接 LeetCode 01. 两数之和 2. 题目描述 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出和为目标值的那两个整数，并返回它们的数组下标。 注意：你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。 你可以按任意顺序返回答案。 3">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-04-01T07:03:16.000Z">
 <meta property="article:modified_time" content="2026-04-01T07:58:08.236Z">
@@ -52,21 +52,12 @@
 
     <!-- persian styles -->
     
+    <!-- KaTeX CSS for math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <!-- rss -->
     
     
 	<!-- mathjax -->
-	
-		<script type="text/x-mathjax-config">
-		  MathJax.Hub.Config({
-			tex2jax: {
-			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-			  inlineMath: [['$','$']],
-			  displayMath: [['$$','$$'], ['\\[','\\]']]
-			}
-		  });
-		</script>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
 	
 <meta name="generator" content="Hexo 8.1.1"></head>
 
@@ -173,12 +164,16 @@
 
   <div class="content e-content" itemprop="articleBody">
     <hr>
-<h2 id="想法"><a href="#想法" class="headerlink" title="想法"></a>想法</h2><p>只是学习的一些碎碎念，记录在自己新创建的博客上❤️<br>希望今天就是一个好的开始！</p>
-<h2 id="1-题目链接"><a href="#1-题目链接" class="headerlink" title="1. 题目链接"></a>1. 题目链接</h2><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/two-sum/">LeetCode 01. 两数之和</a> </p>
-<h2 id="2-题目描述"><a href="#2-题目描述" class="headerlink" title="2. 题目描述"></a>2. 题目描述</h2><p>给定一个整数数组 <code>nums</code> 和一个整数目标值 <code>target</code>，请你在该数组中找出<strong>和为目标值</strong>的那<strong>两个</strong>整数，并返回它们的数组下标。 注意：你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。 你可以按任意顺序返回答案。</p>
-<h3 id="3-代码"><a href="#3-代码" class="headerlink" title="3. 代码"></a>3. 代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">twoSum</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt;  <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	idx = &#123;&#125; <span class="comment"># 创建一个空哈希表（字典）</span></span><br><span class="line">	<span class="keyword">for</span> j, x <span class="keyword">in</span> <span class="built_in">enumerate</span>(nums):</span><br><span class="line">		<span class="keyword">if</span> target - x <span class="keyword">in</span> idx:</span><br><span class="line">			<span class="keyword">return</span> [idx[target - x], j]</span><br><span class="line">		idx[x] = j</span><br></pre></td></tr></table></figure>
-<pre><code>
-</code></pre>
+<h2 id="想法">想法</h2>
+<p>只是学习的一些碎碎念，记录在自己新创建的博客上❤️
+希望今天就是一个好的开始！</p>
+<h2 id="1-题目链接">1. 题目链接</h2>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/two-sum/">LeetCode 01. 两数之和</a></p>
+<h2 id="2-题目描述">2. 题目描述</h2>
+<p>给定一个整数数组 <code>nums</code> 和一个整数目标值 <code>target</code>，请你在该数组中找出<strong>和为目标值</strong>的那<strong>两个</strong>整数，并返回它们的数组下标。 注意：你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。 你可以按任意顺序返回答案。</p>
+<h3 id="3-代码">3. 代码</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">twoSum</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt;  <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	idx = &#123;&#125; <span class="comment"># 创建一个空哈希表（字典）</span></span><br><span class="line">	<span class="keyword">for</span> j, x <span class="keyword">in</span> <span class="built_in">enumerate</span>(nums):</span><br><span class="line">		<span class="keyword">if</span> target - x <span class="keyword">in</span> idx:</span><br><span class="line">			<span class="keyword">return</span> [idx[target - x], j]</span><br><span class="line">		idx[x] = j</span><br></pre></td></tr></table></figure>
+<pre><code></code></pre>
 
   </div>
 </article>
