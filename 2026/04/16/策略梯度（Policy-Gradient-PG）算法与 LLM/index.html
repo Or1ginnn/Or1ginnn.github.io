@@ -8,15 +8,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
     <meta name="description" content="1. 核心思想 直接优化策略 1.1 强化学习基础回顾  智能体（Agent）：与环境交互、学习策略 环境（Environment）：提出状态（State）、奖励（Reward） 策略（Policy）：状态 -&gt; 动作的映射规则  确定性策略：π(a|s) -&gt; 直接输出动作 随机性策略：πθ(a|s) -&gt; 输出动作概率分布（PG 常用） ### 1.2 策略的本质   在强化">
 <meta property="og:type" content="article">
-<meta property="og:title" content="策略梯度（Policy Gradient, PG）算法">
-<meta property="og:url" content="https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:title" content="策略梯度（Policy Gradient, PG）算法与 LLM">
+<meta property="og:url" content="https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/index.html">
 <meta property="og:site_name" content="Or1gin的博客">
 <meta property="og:description" content="1. 核心思想 直接优化策略 1.1 强化学习基础回顾  智能体（Agent）：与环境交互、学习策略 环境（Environment）：提出状态（State）、奖励（Reward） 策略（Policy）：状态 -&gt; 动作的映射规则  确定性策略：π(a|s) -&gt; 直接输出动作 随机性策略：πθ(a|s) -&gt; 输出动作概率分布（PG 常用） ### 1.2 策略的本质   在强化">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-04-16T03:25:58.000Z">
-<meta property="article:modified_time" content="2026-04-21T12:13:02.660Z">
+<meta property="article:modified_time" content="2026-04-22T02:28:47.346Z">
 <meta property="article:author" content="Or1ginnn">
+<meta property="article:tag" content="LLM">
 <meta property="article:tag" content="PG">
+<meta property="article:tag" content="PPO">
 <meta property="article:tag" content="学习笔记">
 <meta name="twitter:card" content="summary">
     
@@ -38,7 +40,7 @@
       
     
     <!-- title -->
-    <title>策略梯度（Policy Gradient, PG）算法</title>
+    <title>策略梯度（Policy Gradient, PG）算法与 LLM</title>
     <!-- async scripts -->
     <!-- Google Analytics -->
 
@@ -119,24 +121,25 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&text=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&is_video=false&description=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=策略梯度（Policy Gradient, PG）算法&body=Check out this article: https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&name=策略梯度（Policy Gradient, PG）算法&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&t=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&text=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&title=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&is_video=false&description=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=策略梯度（Policy Gradient, PG）算法与 LLM&body=Check out this article: https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&title=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&title=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&title=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&title=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&name=策略梯度（Policy Gradient, PG）算法与 LLM&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&t=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.</span> <span class="toc-text">1. 核心思想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 强化学习基础回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E6%84%8F%E4%B9%89"><span class="toc-number">1.2.</span> <span class="toc-text">1.3 参数化意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#policy-gradient%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.3.</span> <span class="toc-text">1.4 Policy Gradient的核心思想</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF"><span class="toc-number">2.</span> <span class="toc-text">2. 优势</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#policy-gradient-%E5%AE%9A%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">3. Policy Gradient 定理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 推导过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5g_t"><span class="toc-number">4.</span> <span class="toc-text">4. 折扣未来回报Gt</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5%E6%95%B0%E5%AD%A6%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">4. 1 折扣未来回报数学定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%8A%98%E6%89%A3%E5%9B%A0%E5%AD%90"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 为什么需要折扣因子</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reinforce%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">5. REINFORCE算法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#reinforce%E6%9B%B4%E6%96%B0%E5%85%AC%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 REINFORCE更新公式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0vs%E4%B8%8E%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.</span> <span class="toc-text">6. 价值函数（V(s)）与贝尔曼方程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 状态价值函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%9D%97%E7%90%86%E8%A7%A3%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 分块理解贝尔曼方程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E7%BA%BF-baseline"><span class="toc-number">7.</span> <span class="toc-text">7. 基线 Baseline</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.</span> <span class="toc-text">1. 核心思想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 强化学习基础回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E6%84%8F%E4%B9%89"><span class="toc-number">1.2.</span> <span class="toc-text">1.3 参数化意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#policy-gradient%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.3.</span> <span class="toc-text">1.4 Policy Gradient的核心思想</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF"><span class="toc-number">2.</span> <span class="toc-text">2. 优势</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#policy-gradient-%E5%AE%9A%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">3. Policy Gradient 定理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 推导过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5g_t"><span class="toc-number">4.</span> <span class="toc-text">4. 折扣未来回报Gt</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5%E6%95%B0%E5%AD%A6%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">4. 1 折扣未来回报数学定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%8A%98%E6%89%A3%E5%9B%A0%E5%AD%90"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 为什么需要折扣因子</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reinforce%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">5. REINFORCE算法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#reinforce%E6%9B%B4%E6%96%B0%E5%85%AC%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 REINFORCE更新公式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0vs%E4%B8%8E%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.</span> <span class="toc-text">6. 价值函数（V(s)）与贝尔曼方程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 状态价值函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%9D%97%E7%90%86%E8%A7%A3%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 分块理解贝尔曼方程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#llm%E4%B8%AD%E7%9A%84%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0"><span class="toc-number">7.</span> <span class="toc-text">7. LLM中的强化学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#nlp%E4%BB%BB%E5%8A%A1%E4%B8%ADagentenvstateaction"><span class="toc-number">7.1.</span> <span class="toc-text">7.1
+NLP任务中Agent、Env、State、Action</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rlhf%E4%B8%AD%E5%9B%9B%E4%B8%AA%E9%87%8D%E8%A6%81%E8%A7%92%E8%89%B2"><span class="toc-number">7.2.</span> <span class="toc-text">7.2 RLHF中四个重要角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#actor-model"><span class="toc-number">7.2.1.</span> <span class="toc-text">7.2.1 Actor Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reference-model%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B"><span class="toc-number">7.2.2.</span> <span class="toc-text">7.2.2 Reference Model（参考模型）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#klkl-divergence-%E6%95%A3%E5%BA%A6"><span class="toc-number">7.2.2.1.</span> <span class="toc-text">7.2.2.1 KL（KL Divergence） 散度</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E5%9B%BE%E6%89%80%E7%A4%BA"><span class="toc-number">7.3.</span> <span class="toc-text">如图所示：</span></a></li></ol></li></ol>
       </div>
     
   </span>
@@ -149,7 +152,7 @@
   <header>
     
     <h1 class="posttitle p-name" itemprop="name headline">
-        策略梯度（Policy Gradient, PG）算法
+        策略梯度（Policy Gradient, PG）算法与 LLM
     </h1>
 
 
@@ -172,7 +175,7 @@
       
     <div class="article-tag">
         <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/PG/" rel="tag">PG</a>, <a class="p-category" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag">学习笔记</a>
+        <a class="p-category" href="/tags/LLM/" rel="tag">LLM</a>, <a class="p-category" href="/tags/PG/" rel="tag">PG</a>, <a class="p-category" href="/tags/PPO/" rel="tag">PPO</a>, <a class="p-category" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag">学习笔记</a>
     </div>
 
 
@@ -355,7 +358,64 @@ class="math inline"><em>γ</em>:</span>折扣因子，把未来价值打个折</
 <li>意思：<strong>当前的总价值=现在拿的钱 +
 未来可能拿的钱的期望</strong></li>
 </ul>
-<h1 id="基线-baseline">7. 基线 Baseline</h1>
+<h1 id="llm中的强化学习">7. LLM中的强化学习</h1>
+<h2 id="nlp任务中agentenvstateaction">7.1
+NLP任务中Agent、Env、State、Action</h2>
+<p><img
+src="https://i-blog.csdnimg.cn/img_convert/c42814fe863b754a6a74b2aa77e86b96.jpeg"
+alt="img" /><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/jennycisp/article/details/147693344">原文</a>
+流程： &gt; -
+我们先投喂给模型一个prompt，期望他能产出符合人类喜好哦哦的responsssse
+&gt; - 在 t
+时刻，根据模型上下文，产出一个token，这个token即对应着强化学习中的动作，我们记为Action。因此，不难理解，在NLP语境下，强化学习任务的动作空间就对应着词表
+&gt; - 在 t 时刻，模型产出token Action对应着的即时收益为 <span
+class="math inline"><em>R</em><sub><em>t</em></sub></span> ，总收益为
+<span class="math inline"><em>V</em><sub><em>t</em></sub></span>
+（蕴含着即时受益与未来收益两个内容），这个收益即可以理解为“对人类喜好的衡量”。此刻，模型的状态从
+<span class="math inline"><em>S</em><sub><em>t</em></sub></span> 变为
+<span
+class="math inline"><em>S</em><sub><em>t</em> + 1</sub></span>，也就是从“上文”变为“上文+新产出token”
+&gt; - 在NLP语境下，Agent即为LLM模型本身，环境则对应它产出的预料</p>
+<h2 id="rlhf中四个重要角色">7.2 RLHF中四个重要角色</h2>
+<figure>
+<img
+src="https://i-blog.csdnimg.cn/img_convert/cb905841126571879bcd6f92d16f17e8.jpeg"
+alt="img" />
+<figcaption aria-hidden="true">img</figcaption>
+</figure>
+<p>如上图，在RLHF-PPO阶段，一共有四个主要模型，分别是： - Actor
+Model：演员模型，这就是我们想要训练的目标语言模型 - Critic
+Model：评论家模型，它的作用是估计总收益 <span
+class="math inline"><em>V</em><sub><em>t</em></sub></span> - Reward
+Model：奖励模型，它的作用是计算即时收益 <span
+class="math inline"><em>R</em><sub><em>t</em></sub></span> - Reference
+Mode：参考模型，它的作用是在RLHF阶段给语言模型加一些约束，防止模型训歪（朝不受控制的方向更新，效果可能越来越差）</p>
+<p>其中： - <strong>Actor/Critic Model：</strong>
+在RLHF阶段是需要训练的（图中给这两个模型加了粗边）；而Reward/Reference
+Model是<strong>参数冻结</strong>的。 - Critic/Reward/Reference
+Model共同组成了一个“奖励-loss”计算体系，综合他们的结果计算loss，用于更新Actor和Critic
+Model</p>
+<h3 id="actor-model">7.2.1 Actor Model</h3>
+<p><strong>Actor Model</strong> 就是要训练的目标语言模型。我们一般用 SFT
+阶段产出的 SFT 模型来对它做初始化。 <img
+src="https://i-blog.csdnimg.cn/img_convert/bf315a11541056e173c3410cf95981ec.jpeg"
+alt="img" /> 本模型设计的目标：让 Actor Model 能产生符合人类喜好的
+Response。所以我们的策略是，先喂给 Actor 一条
+prompt，让它生成对应的Response。然后，我们再将“prompt +
+response”送入我们的“奖励-loss”计算体系中去算得最后的loss，用于更新
+Actor。</p>
+<h3 id="reference-model参考模型">7.2.2 Reference Model（参考模型）</h3>
+<p><strong>Reference Model：</strong> 以下简称 Ref 模型，一般也用
+<strong>SFT</strong> 阶段得到的 SFT
+模型做初始化，在RLHF训练过程中，它的参数是冻结的。 Ref
+模型的主要作用是防止 Actor 训歪。 <img
+src="https://i-blog.csdnimg.cn/img_convert/5de26c9610323f06306c9b2e1f9c325f.jpeg"
+alt="img" />
+“防止模型训歪”换一个更详细的解释是：<strong>我们希望训练出来的Actor模型既能达到符合人类喜好的目的，又尽量让它和SFT模型不要差异太大</strong>。简言之，<strong>我们希望两个模型的输出分布尽量相似</strong>。那什么指标能用来衡量输出分布的相似度呢？我们自然而然想到了<strong>KL散度</strong>。</p>
+<h4 id="klkl-divergence-散度">7.2.2.1 KL（KL Divergence） 散度</h4>
+<p>衡量两个分布「像不像、差多大」</p>
+<h2 id="如图所示">如图所示：</h2>
 
   </div>
 </article>
@@ -383,23 +443,24 @@ class="math inline"><em>γ</em>:</span>折扣因子，把未来价值打个折</
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.</span> <span class="toc-text">1. 核心思想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 强化学习基础回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E6%84%8F%E4%B9%89"><span class="toc-number">1.2.</span> <span class="toc-text">1.3 参数化意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#policy-gradient%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.3.</span> <span class="toc-text">1.4 Policy Gradient的核心思想</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF"><span class="toc-number">2.</span> <span class="toc-text">2. 优势</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#policy-gradient-%E5%AE%9A%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">3. Policy Gradient 定理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 推导过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5g_t"><span class="toc-number">4.</span> <span class="toc-text">4. 折扣未来回报Gt</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5%E6%95%B0%E5%AD%A6%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">4. 1 折扣未来回报数学定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%8A%98%E6%89%A3%E5%9B%A0%E5%AD%90"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 为什么需要折扣因子</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reinforce%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">5. REINFORCE算法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#reinforce%E6%9B%B4%E6%96%B0%E5%85%AC%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 REINFORCE更新公式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0vs%E4%B8%8E%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.</span> <span class="toc-text">6. 价值函数（V(s)）与贝尔曼方程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 状态价值函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%9D%97%E7%90%86%E8%A7%A3%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 分块理解贝尔曼方程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E7%BA%BF-baseline"><span class="toc-number">7.</span> <span class="toc-text">7. 基线 Baseline</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.</span> <span class="toc-text">1. 核心思想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 强化学习基础回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E6%84%8F%E4%B9%89"><span class="toc-number">1.2.</span> <span class="toc-text">1.3 参数化意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#policy-gradient%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.3.</span> <span class="toc-text">1.4 Policy Gradient的核心思想</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF"><span class="toc-number">2.</span> <span class="toc-text">2. 优势</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#policy-gradient-%E5%AE%9A%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">3. Policy Gradient 定理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 推导过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5g_t"><span class="toc-number">4.</span> <span class="toc-text">4. 折扣未来回报Gt</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5%E6%95%B0%E5%AD%A6%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">4. 1 折扣未来回报数学定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%8A%98%E6%89%A3%E5%9B%A0%E5%AD%90"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 为什么需要折扣因子</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reinforce%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">5. REINFORCE算法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#reinforce%E6%9B%B4%E6%96%B0%E5%85%AC%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 REINFORCE更新公式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0vs%E4%B8%8E%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.</span> <span class="toc-text">6. 价值函数（V(s)）与贝尔曼方程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 状态价值函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%9D%97%E7%90%86%E8%A7%A3%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 分块理解贝尔曼方程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#llm%E4%B8%AD%E7%9A%84%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0"><span class="toc-number">7.</span> <span class="toc-text">7. LLM中的强化学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#nlp%E4%BB%BB%E5%8A%A1%E4%B8%ADagentenvstateaction"><span class="toc-number">7.1.</span> <span class="toc-text">7.1
+NLP任务中Agent、Env、State、Action</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rlhf%E4%B8%AD%E5%9B%9B%E4%B8%AA%E9%87%8D%E8%A6%81%E8%A7%92%E8%89%B2"><span class="toc-number">7.2.</span> <span class="toc-text">7.2 RLHF中四个重要角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#actor-model"><span class="toc-number">7.2.1.</span> <span class="toc-text">7.2.1 Actor Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reference-model%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B"><span class="toc-number">7.2.2.</span> <span class="toc-text">7.2.2 Reference Model（参考模型）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#klkl-divergence-%E6%95%A3%E5%BA%A6"><span class="toc-number">7.2.2.1.</span> <span class="toc-text">7.2.2.1 KL（KL Divergence） 散度</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E5%9B%BE%E6%89%80%E7%A4%BA"><span class="toc-number">7.3.</span> <span class="toc-text">如图所示：</span></a></li></ol></li></ol>
       </div>
     
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&text=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&is_video=false&description=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=策略梯度（Policy Gradient, PG）算法&body=Check out this article: https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&title=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&name=策略梯度（Policy Gradient, PG）算法&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95/&t=策略梯度（Policy Gradient, PG）算法"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&text=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&title=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&is_video=false&description=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=策略梯度（Policy Gradient, PG）算法与 LLM&body=Check out this article: https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&title=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&title=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&title=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&title=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&name=策略梯度（Policy Gradient, PG）算法与 LLM&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/&t=策略梯度（Policy Gradient, PG）算法与 LLM"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
