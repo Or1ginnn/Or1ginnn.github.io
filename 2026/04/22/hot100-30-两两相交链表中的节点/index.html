@@ -137,7 +137,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 思路及代码</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%E5%8F%8A%E4%BB%A3%E7%A0%81"><span class="toc-number">2.</span> <span class="toc-text">2. 思路及代码</span></a></li></ol>
       </div>
     
   </span>
@@ -182,13 +182,15 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h1>1. 题目链接</h1>
-<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/swap-nodes-in-pairs">Leetcode 30. 两两相交链表中的节点</a></p>
-<h1>2. 思路及代码</h1>
+    <h1 id="题目链接">1. 题目链接</h1>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/swap-nodes-in-pairs">Leetcode
+30. 两两相交链表中的节点</a></p>
+<h1 id="思路及代码">2. 思路及代码</h1>
 <ul>
 <li>思路：注意使用待交换节点的前一个节点，别忘了！</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, val=0, next=None):</span></span><br><span class="line"><span class="comment">#         self.val = val</span></span><br><span class="line"><span class="comment">#         self.next = next</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">swapPairs</span>(<span class="params">self, head: <span class="type">Optional</span>[ListNode]</span>) -&gt; <span class="type">Optional</span>[ListNode]:</span><br><span class="line">        left = middle = dummy = ListNode(<span class="built_in">next</span>=head)</span><br><span class="line">        right = head</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> right <span class="keyword">and</span> right.<span class="built_in">next</span>:</span><br><span class="line">            right = right.<span class="built_in">next</span></span><br><span class="line">            middle = left.<span class="built_in">next</span></span><br><span class="line">            <span class="comment"># 交换</span></span><br><span class="line">            left.<span class="built_in">next</span> = right</span><br><span class="line">            middle.<span class="built_in">next</span> = right.<span class="built_in">next</span></span><br><span class="line">            right.<span class="built_in">next</span> = middle</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 复位</span></span><br><span class="line">            right = middle.<span class="built_in">next</span></span><br><span class="line">            left = middle</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> dummy.<span class="built_in">next</span></span><br></pre></td></tr></table></figure>
+
   </div>
 </article>
 
@@ -215,7 +217,7 @@
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 思路及代码</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%E5%8F%8A%E4%BB%A3%E7%A0%81"><span class="toc-number">2.</span> <span class="toc-text">2. 思路及代码</span></a></li></ol>
       </div>
     
 

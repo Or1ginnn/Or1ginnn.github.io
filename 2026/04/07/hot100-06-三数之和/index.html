@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="1. 题目链接 Leetcode 06. 三数之和 2. 题解 这道题感觉稍微复杂，双指针并不复杂，控制着左侧指针 i，然后对 i 后面的双指针来求和 比较复杂的是三个优化：  优化 1: 跳过重复数，如果 nums[i] &#x3D;&#x3D; nums[i - 1]，nums[i] 将要探索的组合，nums[i - 1]全部探索过。 优化 2：nums[i] + nums[i + 1] + nums[i + 2">
+    <meta name="description" content="1. 题目链接 Leetcode 06. 三数之和 2. 题解 这道题感觉稍微复杂，双指针并不复杂，控制着左侧指针 i，然后对 i 后面的双指针来求和 比较复杂的是三个优化： - 优化 1: 跳过重复数，如果 nums[i] &#x3D;&#x3D; nums[i - 1]，nums[i] 将要探索的组合，nums[i - 1]全部探索过。 - 优化 2：nums[i] + nums[i + 1] + nums[i">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hot100 - 06 - 三数之和">
 <meta property="og:url" content="https://or1ginnn.github.io/2026/04/07/hot100-06-%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C/index.html">
 <meta property="og:site_name" content="Or1gin的博客">
-<meta property="og:description" content="1. 题目链接 Leetcode 06. 三数之和 2. 题解 这道题感觉稍微复杂，双指针并不复杂，控制着左侧指针 i，然后对 i 后面的双指针来求和 比较复杂的是三个优化：  优化 1: 跳过重复数，如果 nums[i] &#x3D;&#x3D; nums[i - 1]，nums[i] 将要探索的组合，nums[i - 1]全部探索过。 优化 2：nums[i] + nums[i + 1] + nums[i + 2">
+<meta property="og:description" content="1. 题目链接 Leetcode 06. 三数之和 2. 题解 这道题感觉稍微复杂，双指针并不复杂，控制着左侧指针 i，然后对 i 后面的双指针来求和 比较复杂的是三个优化： - 优化 1: 跳过重复数，如果 nums[i] &#x3D;&#x3D; nums[i - 1]，nums[i] 将要探索的组合，nums[i - 1]全部探索过。 - 优化 2：nums[i] + nums[i + 1] + nums[i">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-04-07T06:01:42.000Z">
 <meta property="article:modified_time" content="2026-04-07T06:56:15.814Z">
@@ -136,7 +136,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 题解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">3. 代码</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E8%A7%A3"><span class="toc-number">2.</span> <span class="toc-text">2. 题解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81"><span class="toc-number">3.</span> <span class="toc-text">3. 代码</span></a></li></ol>
       </div>
     
   </span>
@@ -181,18 +181,19 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h1>1. 题目链接</h1>
-<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/3sum/">Leetcode 06. 三数之和</a></p>
-<h1>2. 题解</h1>
-<p>这道题感觉稍微复杂，双指针并不复杂，控制着左侧指针 i，然后对 i 后面的双指针来求和<br>
-比较复杂的是三个优化：</p>
-<ul>
-<li>优化 1: 跳过重复数，如果 nums[i] == nums[i - 1]，nums[i] 将要探索的组合，nums[i - 1]全部探索过。</li>
-<li>优化 2：nums[i] + nums[i + 1] + nums[i + 2] &gt; 0说明后面没有小于 0 的组合</li>
-<li>优化 3: 注意<strong>当nums[i] + nums[-1] + nums[-2] &lt; 0 时，不是说没有组合了，只是说明当前i指针位置不存在组合！！所以用continue</strong></li>
-</ul>
-<h1>3. 代码</h1>
+    <h1 id="题目链接">1. 题目链接</h1>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/3sum/">Leetcode 06.
+三数之和</a></p>
+<h1 id="题解">2. 题解</h1>
+<p>这道题感觉稍微复杂，双指针并不复杂，控制着左侧指针 i，然后对 i
+后面的双指针来求和 比较复杂的是三个优化： - 优化 1: 跳过重复数，如果
+nums[i] == nums[i - 1]，nums[i] 将要探索的组合，nums[i - 1]全部探索过。
+- 优化 2：nums[i] + nums[i + 1] + nums[i + 2] &gt; 0说明后面没有小于 0
+的组合 - 优化 3: 注意<strong>当nums[i] + nums[-1] + nums[-2] &lt; 0
+时，不是说没有组合了，只是说明当前i指针位置不存在组合！！所以用continue</strong></p>
+<h1 id="代码">3. 代码</h1>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">threeSum</span>(<span class="params">self, nums: <span class="built_in">list</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">list</span>[<span class="built_in">list</span>[<span class="built_in">int</span>]]:</span><br><span class="line">        nums.sort()</span><br><span class="line">        ans = []</span><br><span class="line">        n = <span class="built_in">len</span>(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n - <span class="number">2</span>):</span><br><span class="line">            x = nums[i]</span><br><span class="line">            <span class="comment"># 优化 1： 跳过重复数</span></span><br><span class="line">            <span class="keyword">if</span> i &gt; <span class="number">0</span> <span class="keyword">and</span> x == nums[i - <span class="number">1</span>]:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="comment"># 优化 2：</span></span><br><span class="line">            <span class="keyword">if</span>  x + nums[i + <span class="number">1</span>] + nums[i + <span class="number">2</span>] &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            <span class="comment"># # 优化 3：</span></span><br><span class="line">            <span class="keyword">if</span> x + nums[-<span class="number">1</span>] + nums[-<span class="number">2</span>] &lt; <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">            j = i + <span class="number">1</span></span><br><span class="line">            k = n - <span class="number">1</span></span><br><span class="line">            <span class="keyword">while</span> j &lt; k:</span><br><span class="line">                a = x + nums[j] + nums[k]</span><br><span class="line">                <span class="keyword">if</span> a &lt; <span class="number">0</span>:</span><br><span class="line">                    j += <span class="number">1</span></span><br><span class="line">                <span class="keyword">elif</span> a &gt; <span class="number">0</span>:</span><br><span class="line">                    k -=<span class="number">1</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    ans.append([x, nums[j], nums[k]])</span><br><span class="line">                    j = j + <span class="number">1</span></span><br><span class="line">                    <span class="keyword">while</span> j &lt; k <span class="keyword">and</span> nums[j] == nums[j - <span class="number">1</span>]:</span><br><span class="line">                        j += <span class="number">1</span></span><br><span class="line">                    k = k - <span class="number">1</span></span><br><span class="line">                    <span class="keyword">while</span> j &lt; k <span class="keyword">and</span> nums[k] == nums[k + <span class="number">1</span>]:</span><br><span class="line">                        k -= <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
+
   </div>
 </article>
 
@@ -219,7 +220,7 @@
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 题解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">3. 代码</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E8%A7%A3"><span class="toc-number">2.</span> <span class="toc-text">2. 题解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81"><span class="toc-number">3.</span> <span class="toc-text">3. 代码</span></a></li></ol>
       </div>
     
 

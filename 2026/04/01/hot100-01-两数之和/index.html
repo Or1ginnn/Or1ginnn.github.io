@@ -136,7 +136,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%B3%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">想法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">2.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">3.</span> <span class="toc-text">2. 题目描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BB%A3%E7%A0%81"><span class="toc-number">3.1.</span> <span class="toc-text">3. 代码</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%B3%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">想法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">2.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">3.</span> <span class="toc-text">2. 题目描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81"><span class="toc-number">3.1.</span> <span class="toc-text">3. 代码</span></a></li></ol></li></ol>
       </div>
     
   </span>
@@ -181,17 +181,21 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <hr>
+    <hr />
 <h2 id="想法">想法</h2>
-<p>只是学习的一些碎碎念，记录在自己新创建的博客上❤️<br>
+<p>只是学习的一些碎碎念，记录在自己新创建的博客上❤️
 希望今天就是一个好的开始！</p>
-<h2 id="1-题目链接">1. 题目链接</h2>
-<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/two-sum/">LeetCode 01. 两数之和</a></p>
-<h2 id="2-题目描述">2. 题目描述</h2>
-<p>给定一个整数数组 <code>nums</code> 和一个整数目标值 <code>target</code>，请你在该数组中找出<strong>和为目标值</strong>的那<strong>两个</strong>整数，并返回它们的数组下标。 注意：你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。 你可以按任意顺序返回答案。</p>
-<h3 id="3-代码">3. 代码</h3>
+<h2 id="题目链接">1. 题目链接</h2>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/two-sum/">LeetCode 01.
+两数之和</a></p>
+<h2 id="题目描述">2. 题目描述</h2>
+<p>给定一个整数数组 <code>nums</code> 和一个整数目标值
+<code>target</code>，请你在该数组中找出<strong>和为目标值</strong>的那<strong>两个</strong>整数，并返回它们的数组下标。
+注意：你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
+你可以按任意顺序返回答案。</p>
+<h3 id="代码">3. 代码</h3>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">twoSum</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt;  <span class="type">List</span>[<span class="built_in">int</span>]:</span><br><span class="line">	idx = &#123;&#125; <span class="comment"># 创建一个空哈希表（字典）</span></span><br><span class="line">	<span class="keyword">for</span> j, x <span class="keyword">in</span> <span class="built_in">enumerate</span>(nums):</span><br><span class="line">		<span class="keyword">if</span> target - x <span class="keyword">in</span> idx:</span><br><span class="line">			<span class="keyword">return</span> [idx[target - x], j]</span><br><span class="line">		idx[x] = j</span><br></pre></td></tr></table></figure>
-<pre><code></code></pre>
+<p>```</p>
 
   </div>
 </article>
@@ -219,7 +223,7 @@
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%B3%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">想法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">2.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">3.</span> <span class="toc-text">2. 题目描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BB%A3%E7%A0%81"><span class="toc-number">3.1.</span> <span class="toc-text">3. 代码</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%B3%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">想法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">2.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">3.</span> <span class="toc-text">2. 题目描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81"><span class="toc-number">3.1.</span> <span class="toc-text">3. 代码</span></a></li></ol></li></ol>
       </div>
     
 

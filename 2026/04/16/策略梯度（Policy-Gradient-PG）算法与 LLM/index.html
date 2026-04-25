@@ -6,17 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="1. 核心思想 直接优化策略 1.1 强化学习基础回顾  智能体（Agent）：与环境交互、学习策略 环境（Environment）：提出状态（State）、奖励（Reward） 策略（Policy）：状态 -&gt; 动作的映射规则  确定性策略：$\pi(a|s)$ -&gt; 直接输出动作 随机性策略：$\pi_\theta(a|s)$ -&gt; 输出动作概率分布（PG 常用）    1.">
+    <meta name="description" content="1. 核心思想 直接优化策略 1.1 强化学习基础回顾  智能体（Agent）：与环境交互、学习策略 环境（Environment）：提出状态（State）、奖励（Reward） 策略（Policy）：状态 -&gt; 动作的映射规则  确定性策略：π(a|s) -&gt; 直接输出动作 随机性策略：πθ(a|s) -&gt; 输出动作概率分布（PG 常用） ### 1.2 策略的本质   在强化">
 <meta property="og:type" content="article">
 <meta property="og:title" content="策略梯度（Policy Gradient, PG）算法与 LLM">
 <meta property="og:url" content="https://or1ginnn.github.io/2026/04/16/%E7%AD%96%E7%95%A5%E6%A2%AF%E5%BA%A6%EF%BC%88Policy-Gradient-PG%EF%BC%89%E7%AE%97%E6%B3%95%E4%B8%8E%20LLM/index.html">
 <meta property="og:site_name" content="Or1gin的博客">
-<meta property="og:description" content="1. 核心思想 直接优化策略 1.1 强化学习基础回顾  智能体（Agent）：与环境交互、学习策略 环境（Environment）：提出状态（State）、奖励（Reward） 策略（Policy）：状态 -&gt; 动作的映射规则  确定性策略：$\pi(a|s)$ -&gt; 直接输出动作 随机性策略：$\pi_\theta(a|s)$ -&gt; 输出动作概率分布（PG 常用）    1.">
+<meta property="og:description" content="1. 核心思想 直接优化策略 1.1 强化学习基础回顾  智能体（Agent）：与环境交互、学习策略 环境（Environment）：提出状态（State）、奖励（Reward） 策略（Policy）：状态 -&gt; 动作的映射规则  确定性策略：π(a|s) -&gt; 直接输出动作 随机性策略：πθ(a|s) -&gt; 输出动作概率分布（PG 常用） ### 1.2 策略的本质   在强化">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/c42814fe863b754a6a74b2aa77e86b96.jpeg">
-<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/cb905841126571879bcd6f92d16f17e8.jpeg">
-<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/bf315a11541056e173c3410cf95981ec.jpeg">
-<meta property="og:image" content="https://i-blog.csdnimg.cn/img_convert/5de26c9610323f06306c9b2e1f9c325f.jpeg">
 <meta property="article:published_time" content="2026-04-16T03:25:58.000Z">
 <meta property="article:modified_time" content="2026-04-22T08:52:55.117Z">
 <meta property="article:author" content="Or1ginnn">
@@ -25,7 +21,6 @@
 <meta property="article:tag" content="PPO">
 <meta property="article:tag" content="学习笔记">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://i-blog.csdnimg.cn/img_convert/c42814fe863b754a6a74b2aa77e86b96.jpeg">
     
     
       
@@ -143,7 +138,8 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 核心思想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 强化学习基础回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E7%AD%96%E7%95%A5%E7%9A%84%E6%9C%AC%E8%B4%A8"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 策略的本质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E5%8F%82%E6%95%B0%E5%8C%96%E6%84%8F%E4%B9%89"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 参数化意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-Policy-Gradient%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 Policy Gradient的核心思想</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 优势</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">3. Policy Gradient 定理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 推导过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">4. 折扣未来回报$G_t$</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5%E6%95%B0%E5%AD%A6%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">4. 1 折扣未来回报数学定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 核心思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%8A%98%E6%89%A3%E5%9B%A0%E5%AD%90"><span class="toc-number">4.3.</span> <span class="toc-text">4.2 为什么需要折扣因子</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">5.</span> <span class="toc-text">5. REINFORCE算法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#5-1-REINFORCE%E6%9B%B4%E6%96%B0%E5%85%AC%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 REINFORCE更新公式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">6.</span> <span class="toc-text">6. 价值函数（$V(s)$）与贝尔曼方程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#6-1-%E7%8A%B6%E6%80%81%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 状态价值函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-2-%E5%88%86%E5%9D%97%E7%90%86%E8%A7%A3%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 分块理解贝尔曼方程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">7.</span> <span class="toc-text">7. LLM中的强化学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#7-1-NLP%E4%BB%BB%E5%8A%A1%E4%B8%ADAgent%E3%80%81Env%E3%80%81State%E3%80%81Action"><span class="toc-number">7.1.</span> <span class="toc-text">7.1 NLP任务中Agent、Env、State、Action</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-2-RLHF%E4%B8%AD%E5%9B%9B%E4%B8%AA%E9%87%8D%E8%A6%81%E8%A7%92%E8%89%B2"><span class="toc-number">7.2.</span> <span class="toc-text">7.2 RLHF中四个重要角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-1-Actor-Model"><span class="toc-number">7.2.1.</span> <span class="toc-text">7.2.1 Actor Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-2-Reference-Model%EF%BC%88%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="toc-number">7.2.2.</span> <span class="toc-text">7.2.2 Reference Model（参考模型）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-2-1-KL%EF%BC%88KL-Divergence%EF%BC%89-%E6%95%A3%E5%BA%A6"><span class="toc-number">7.2.2.1.</span> <span class="toc-text">7.2.2.1 KL（KL Divergence） 散度</span></a></li></ol></li></ol></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.</span> <span class="toc-text">1. 核心思想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 强化学习基础回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E6%84%8F%E4%B9%89"><span class="toc-number">1.2.</span> <span class="toc-text">1.3 参数化意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#policy-gradient%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.3.</span> <span class="toc-text">1.4 Policy Gradient的核心思想</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF"><span class="toc-number">2.</span> <span class="toc-text">2. 优势</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#policy-gradient-%E5%AE%9A%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">3. Policy Gradient 定理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 推导过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5g_t"><span class="toc-number">4.</span> <span class="toc-text">4. 折扣未来回报Gt</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5%E6%95%B0%E5%AD%A6%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">4. 1 折扣未来回报数学定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%8A%98%E6%89%A3%E5%9B%A0%E5%AD%90"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 为什么需要折扣因子</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reinforce%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">5. REINFORCE算法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#reinforce%E6%9B%B4%E6%96%B0%E5%85%AC%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 REINFORCE更新公式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0vs%E4%B8%8E%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.</span> <span class="toc-text">6. 价值函数（V(s)）与贝尔曼方程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 状态价值函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%9D%97%E7%90%86%E8%A7%A3%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 分块理解贝尔曼方程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#llm%E4%B8%AD%E7%9A%84%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0"><span class="toc-number">7.</span> <span class="toc-text">7. LLM中的强化学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#nlp%E4%BB%BB%E5%8A%A1%E4%B8%ADagentenvstateaction"><span class="toc-number">7.1.</span> <span class="toc-text">7.1
+NLP任务中Agent、Env、State、Action</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rlhf%E4%B8%AD%E5%9B%9B%E4%B8%AA%E9%87%8D%E8%A6%81%E8%A7%92%E8%89%B2"><span class="toc-number">7.2.</span> <span class="toc-text">7.2 RLHF中四个重要角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#actor-model"><span class="toc-number">7.2.1.</span> <span class="toc-text">7.2.1 Actor Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reference-model%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B"><span class="toc-number">7.2.2.</span> <span class="toc-text">7.2.2 Reference Model（参考模型）</span></a></li></ol></li></ol></li></ol>
       </div>
     
   </span>
@@ -188,191 +184,277 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h1>1. 核心思想</h1>
+    <h1 id="核心思想">1. 核心思想</h1>
 <p><strong>直接优化策略</strong></p>
-<h3 id="1-1-强化学习基础回顾">1.1 强化学习基础回顾</h3>
+<h3 id="强化学习基础回顾">1.1 强化学习基础回顾</h3>
 <ul>
 <li>智能体（Agent）：与环境交互、学习策略</li>
 <li>环境（Environment）：提出状态（State）、奖励（Reward）</li>
 <li>策略（Policy）：状态 -&gt; 动作的映射规则
 <ul>
-<li>确定性策略：$\pi(a|s)$ -&gt; 直接输出动作</li>
-<li>随机性策略：$\pi_\theta(a|s)$ -&gt; 输出动作概率分布（PG 常用）</li>
+<li>确定性策略：<span
+class="math inline"><em>π</em>(<em>a</em>|<em>s</em>)</span> -&gt;
+直接输出动作</li>
+<li>随机性策略：<span
+class="math inline"><em>π</em><sub><em>θ</em></sub>(<em>a</em>|<em>s</em>)</span>
+-&gt; 输出动作概率分布（PG 常用） ### 1.2 策略的本质</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<h3 id="1-2-策略的本质">1.2 策略的本质</h3>
-<p>在强化学习中，策略定义了智能体在状态 $s$ 时选择动作 $a$ 的规则，通常分为：<br>
+<p>在强化学习中，策略定义了智能体在状态 <span
+class="math inline"><em>s</em></span> 时选择动作 <span
+class="math inline"><em>a</em></span> 的规则，通常分为：
 <strong>确定性策略</strong> 以及 <strong>随机性策略</strong></p>
-<h3 id="1-3-参数化意义">1.3 参数化意义</h3>
-<p>通过可学习参数 $\theta$ （如神经网络的权重）显示表示策略，使得梯度上升算法可以直接调整参数以优化长期回报。传统方法（如 Q-Learning）间接优化值函数，而策略梯度直接对策略建模，自然支持复杂动作空间（如连续、高维动作）。</p>
-<h3 id="1-4-Policy-Gradient的核心思想">1.4 Policy Gradient的核心思想</h3>
+<h3 id="参数化意义">1.3 参数化意义</h3>
+<p>通过可学习参数 <span class="math inline"><em>θ</em></span>
+（如神经网络的权重）显示表示策略，使得梯度上升算法可以直接调整参数以优化长期回报。传统方法（如
+Q-Learning）间接优化值函数，而策略梯度直接对策略建模，自然支持复杂动作空间（如连续、高维动作）。</p>
+<h3 id="policy-gradient的核心思想">1.4 Policy Gradient的核心思想</h3>
 <p>与其绕道价值函数，不如直接对策略进行参数化，然后通过梯度上升来优化它！</p>
-<p>$\pi_\theta(a|s)$ 表示一个由参数 $\theta$ 定义的策略，它输出在状态 $s$ 下采取动作 $a$ 的概率。目标是：$$\max J(\theta)=\mathbb{E}<em>{\tau \sim \pi</em>\theta}$$其中 $\tau$ 是一条轨迹，$R(\tau)$ 是这条轨迹的总奖励。</p>
-<h1>2. 优势</h1>
-<ol>
-<li><strong>==优势一：天然支持连续动作空间==</strong>：策略网络可以直接输出连续动作的分布参数（比如高斯分布的均值和方差），从中采样即可得到动作。</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mean, <span class="built_in">std</span> = policy_network(state)</span><br><span class="line">action = Normal(mean, <span class="built_in">std</span>).sample()</span><br></pre></td></tr></table></figure>
-<ol start="2">
+<p><span
+class="math inline"><em>π</em><sub><em>θ</em></sub>(<em>a</em>|<em>s</em>)</span>
+表示一个由参数 <span class="math inline"><em>θ</em></span>
+定义的策略，它输出在状态 <span class="math inline"><em>s</em></span>
+下采取动作 <span class="math inline"><em>a</em></span>
+的概率。目标是：<span
+class="math display">max <em>J</em>(<em>θ</em>) = 𝔼<sub><em>τ</em> ∼ <em>π</em><sub><em>θ</em></sub></sub></span>其中
+<span class="math inline"><em>τ</em></span> 是一条轨迹，<span
+class="math inline"><em>R</em>(<em>τ</em>)</span>
+是这条轨迹的总奖励。</p>
+<h1 id="优势">2. 优势</h1>
+<ol type="1">
+<li><strong>==优势一：天然支持连续动作空间==</strong>：策略网络可以直接输出连续动作的分布参数（比如高斯分布的均值和方差），从中采样即可得到动作。
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mean, <span class="built_in">std</span> = policy_network(state)</span><br><span class="line">action = Normal(mean, <span class="built_in">std</span>).sample()</span><br></pre></td></tr></table></figure></li>
 <li>==<strong>优势二：可以学习随机策略</strong>==：策略直接输出动作的概率分布，天然支持随机性。</li>
 <li>==<strong>优势三：更好的收敛性质</strong>==：策略参数的小变化只会导致策略分布的小变化，使得优化过程更加平滑稳定。</li>
 <li>==<strong>优势四：端到端优化</strong>==：直接优化我们真正关心的目标——累积奖励，而不是间接地通过简直函数。</li>
 </ol>
-<h1>3. Policy Gradient 定理</h1>
-<h2 id="3-1-推导过程">3.1 推导过程</h2>
-<p>目标函数：$$\max J(\theta)=\mathbb{E}<em>{\tau \sim \pi</em>\theta}[R(\tau)]=\sum_{\tau} P(\tau|\theta)R(\tau)$$对 $\theta$ 求梯度：<br>
-$$\nabla_{\theta}J(\theta)=\sum_\tau \nabla_\theta P(\tau|\theta)R(\tau)$$<br>
-这里取巧使用<strong>对数导数</strong>：$$\nabla_\theta P(\tau|\theta) = P(\tau|\theta) \nabla_\theta \log P(\tau|\theta)$$<br>
-代入得：$$\nabla_\theta J(\theta) = \sum_\tau P(\tau|\theta) \nabla_\theta \log P(\tau | \theta) R(\tau) = \mathbb{E}<em>{\tau \sim \pi</em>\theta}[\nabla_\theta \log P(\tau | \theta) R(\tau)]$$接下来展开$\log P (\tau|\theta)$：$$\log P(\tau | \theta) = \log p(s_0) + \sum_{t=0}^{T-1} [\log \pi_\theta (a_t|s_t) + \log p (s_{t + 1} | s_t, a_t)]$$关键观察：$p(s_0)$ 和 $p(s_{t + 1}|s_t, a_t)$ 是环境动态，与 $\theta$ 无关！<br>
-因此： $$\nabla_\theta \log P (\tau | \theta) = \sum_{t = 0}^{T - 1} \nabla_\theta \log \pi_\theta(a_t | s_t)$$==最终形式==：Policy Gradinet 定理：$$\nabla_\theta J(\theta) = \mathbb{E}<em>{\tau \sim \pi</em>\theta}[\sum_{t=0}^{T-1} \nabla_\theta \log \pi_\theta (a_t|s_t)R(\tau)]$$结果太美了（<a target="_blank" rel="noopener" href="https://blog.csdn.net/rmysjm/article/details/155713409">原文</a>），&gt; 1. 用当前策略采样轨迹 2. 计算每个动作的$\nabla_\theta \log \pi_\theta (a_t|s_t)$ 3. 用轨迹奖励加权。</p>
-<p><em><strong>物理意义</strong></em>：$$\nabla_\theta \log \pi_\theta(a_t| s_t) = \frac{\nabla_\theta \pi (a_t|b_t)}{\pi(a_t|s_t)}$$可理解为：==<strong>动作概率的相对变化率</strong>==，即：</p>
-<ul>
-<li>高概率动作：梯度更新幅度小</li>
-<li>低概率动作：地图更新幅度大<br>
-<strong>权重自适应机制</strong>：$$\triangle\theta \propto \frac{\nabla_\theta \pi (a_t|b_t)}{\pi(a_t|s_t)} \cdot G_t$$本质是重要性加权更新：</li>
-<li>分母自动调节更新步长</li>
-<li>避免高概率动作主导优化过程</li>
-</ul>
-<p><em>原文说的很美，博主理解1h才理解这一套逻辑，对于博主还是太复杂。下面附一段豆包写的简略代码：</em></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 1. 策略网络：输入3维 → 输出2个动作（左/右）</span></span><br><span class="line"><span class="comment"># 对应公式：πθ(a|s)</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line">policy = nn.Linear(</span><br><span class="line">    in_features=<span class="number">3</span>,   <span class="comment"># 输入：状态是 3维 one-hot 向量</span></span><br><span class="line">    out_features=<span class="number">2</span>   <span class="comment"># 输出：2个动作（左、右）的概率</span></span><br><span class="line">)</span><br><span class="line">optimizer = optim.Adam(policy.parameters(), lr=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 2. 游戏状态定义（3维！）</span></span><br><span class="line"><span class="comment"># 必须3个数字，才能输入 Linear(3,2)</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line">STATE_1 = torch.tensor([<span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>])  <span class="comment"># 状态1 → 3维</span></span><br><span class="line">STATE_2 = torch.tensor([<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">0.0</span>])  <span class="comment"># 状态2 → 3维</span></span><br><span class="line">STATE_3 = torch.tensor([<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>])  <span class="comment"># 状态3 → 3维</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 3. 让智能体玩一局游戏（采样轨迹 τ）</span></span><br><span class="line"><span class="comment"># 对应公式：τ ~ πθ</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line">trajectory = []</span><br><span class="line">total_reward = <span class="number">0</span></span><br><span class="line">s = STATE_1  <span class="comment"># 初始状态</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">    <span class="comment"># 前向传播：输入3维状态 → 输出动作概率</span></span><br><span class="line">    logits = policy(s)</span><br><span class="line">    prob = torch.softmax(logits, dim=-<span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 选动作（0=左，1=右）</span></span><br><span class="line">    a = torch.multinomial(prob, <span class="number">1</span>).item()</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 奖励：选右=得分，选左=不得分</span></span><br><span class="line">    r = <span class="number">1</span> <span class="keyword">if</span> a == <span class="number">1</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">    total_reward += r</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 保存：(状态, 动作) → 后面算梯度用</span></span><br><span class="line">    trajectory.append((s, a))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 切换状态（简化）</span></span><br><span class="line">    s = STATE_2 <span class="keyword">if</span> a == <span class="number">1</span> <span class="keyword">else</span> STATE_3</span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 4. 策略梯度核心代码！</span></span><br><span class="line"><span class="comment"># 对应公式：∇θ J(θ) = E[ ∑ ∇θ logπθ(a|s) * R(τ) ]</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line">optimizer.zero_grad()</span><br><span class="line">loss = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 遍历每一步动作</span></span><br><span class="line"><span class="keyword">for</span> s, a <span class="keyword">in</span> trajectory:</span><br><span class="line">    <span class="comment"># 计算 log πθ(a|s)</span></span><br><span class="line">    logits = policy(s)</span><br><span class="line">    log_prob = torch.log_softmax(logits, dim=-<span class="number">1</span>)[a]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 公式核心：log概率梯度 × 总奖励</span></span><br><span class="line">    <span class="comment"># ∇θ logπθ * R(τ)</span></span><br><span class="line">    loss += -log_prob * total_reward  <span class="comment"># 负号 = 梯度上升</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 平均 → 对应期望 E</span></span><br><span class="line">loss = loss / <span class="built_in">len</span>(trajectory)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 反向传播 → 更新参数 θ</span></span><br><span class="line">loss.backward()</span><br><span class="line">optimizer.step()</span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 输出结果</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;这局总分 R(τ) = <span class="subst">&#123;total_reward&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;更新完成！智能体学会优先选【右】&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="policy-gradient-定理">3. Policy Gradient 定理</h1>
+<h2 id="推导过程">3.1 推导过程</h2>
+<p>目标函数：<span
+class="math display">max <em>J</em>(<em>θ</em>) = 𝔼<sub><em>τ</em> ∼ <em>π</em><sub><em>θ</em></sub></sub>[<em>R</em>(<em>τ</em>)] = ∑<sub><em>τ</em></sub><em>P</em>(<em>τ</em>|<em>θ</em>)<em>R</em>(<em>τ</em>)</span>对
+<span class="math inline"><em>θ</em></span> 求梯度： <span
+class="math display">∇<sub><em>θ</em></sub><em>J</em>(<em>θ</em>) = ∑<sub><em>τ</em></sub>∇<sub><em>θ</em></sub><em>P</em>(<em>τ</em>|<em>θ</em>)<em>R</em>(<em>τ</em>)</span>
+这里取巧使用<strong>对数导数</strong>：<span
+class="math display">∇<sub><em>θ</em></sub><em>P</em>(<em>τ</em>|<em>θ</em>) = <em>P</em>(<em>τ</em>|<em>θ</em>)∇<sub><em>θ</em></sub>log <em>P</em>(<em>τ</em>|<em>θ</em>)</span>
+代入得：<span
+class="math display">∇<sub><em>θ</em></sub><em>J</em>(<em>θ</em>) = ∑<sub><em>τ</em></sub><em>P</em>(<em>τ</em>|<em>θ</em>)∇<sub><em>θ</em></sub>log <em>P</em>(<em>τ</em>|<em>θ</em>)<em>R</em>(<em>τ</em>) = 𝔼<sub><em>τ</em> ∼ <em>π</em><sub><em>θ</em></sub></sub>[∇<sub><em>θ</em></sub>log <em>P</em>(<em>τ</em>|<em>θ</em>)<em>R</em>(<em>τ</em>)]</span>接下来展开<span
+class="math inline">log <em>P</em>(<em>τ</em>|<em>θ</em>)</span>：<span
+class="math display">$$\log P(\tau | \theta) = \log p(s_0) +
+\sum_{t=0}^{T-1} [\log \pi_\theta (a_t|s_t) + \log p (s_{t + 1} | s_t,
+a_t)]$$</span>关键观察：<span
+class="math inline"><em>p</em>(<em>s</em><sub>0</sub>)</span> 和 <span
+class="math inline"><em>p</em>(<em>s</em><sub><em>t</em> + 1</sub>|<em>s</em><sub><em>t</em></sub>, <em>a</em><sub><em>t</em></sub>)</span>
+是环境动态，与 <span class="math inline"><em>θ</em></span> 无关！ 因此：
+<span class="math display">$$\nabla_\theta \log P (\tau | \theta) =
+\sum_{t = 0}^{T - 1} \nabla_\theta \log \pi_\theta(a_t |
+s_t)$$</span>==最终形式==：Policy Gradinet 定理：<span
+class="math display">$$\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim
+\pi_\theta}[\sum_{t=0}^{T-1} \nabla_\theta \log \pi_\theta
+(a_t|s_t)R(\tau)]$$</span>结果太美了（<a
+target="_blank" rel="noopener" href="https://blog.csdn.net/rmysjm/article/details/155713409">原文</a>），&gt;
+1. 用当前策略采样轨迹 2. 计算每个动作的<span
+class="math inline">∇<sub><em>θ</em></sub>log <em>π</em><sub><em>θ</em></sub>(<em>a</em><sub><em>t</em></sub>|<em>s</em><sub><em>t</em></sub>)</span>
+3. 用轨迹奖励加权。</p>
+<p><strong><em>物理意义</em></strong>：<span
+class="math display">$$\nabla_\theta \log \pi_\theta(a_t| s_t) =
+\frac{\nabla_\theta \pi
+(a_t|b_t)}{\pi(a_t|s_t)}$$</span>可理解为：==<strong>动作概率的相对变化率</strong>==，即：
+- 高概率动作：梯度更新幅度小 - 低概率动作：地图更新幅度大
+<strong>权重自适应机制</strong>：<span
+class="math display">$$\triangle\theta \propto \frac{\nabla_\theta \pi
+(a_t|b_t)}{\pi(a_t|s_t)} \cdot G_t$$</span>本质是重要性加权更新： -
+分母自动调节更新步长 - 避免高概率动作主导优化过程</p>
+<p><em>原文说的很美，博主理解1h才理解这一套逻辑，对于博主还是太复杂。下面附一段豆包写的简略代码：</em>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 1. 策略网络：输入3维 → 输出2个动作（左/右）</span></span><br><span class="line"><span class="comment"># 对应公式：πθ(a|s)</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line">policy = nn.Linear(</span><br><span class="line">    in_features=<span class="number">3</span>,   <span class="comment"># 输入：状态是 3维 one-hot 向量</span></span><br><span class="line">    out_features=<span class="number">2</span>   <span class="comment"># 输出：2个动作（左、右）的概率</span></span><br><span class="line">)</span><br><span class="line">optimizer = optim.Adam(policy.parameters(), lr=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 2. 游戏状态定义（3维！）</span></span><br><span class="line"><span class="comment"># 必须3个数字，才能输入 Linear(3,2)</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line">STATE_1 = torch.tensor([<span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>])  <span class="comment"># 状态1 → 3维</span></span><br><span class="line">STATE_2 = torch.tensor([<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">0.0</span>])  <span class="comment"># 状态2 → 3维</span></span><br><span class="line">STATE_3 = torch.tensor([<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>])  <span class="comment"># 状态3 → 3维</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 3. 让智能体玩一局游戏（采样轨迹 τ）</span></span><br><span class="line"><span class="comment"># 对应公式：τ ~ πθ</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line">trajectory = []</span><br><span class="line">total_reward = <span class="number">0</span></span><br><span class="line">s = STATE_1  <span class="comment"># 初始状态</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">    <span class="comment"># 前向传播：输入3维状态 → 输出动作概率</span></span><br><span class="line">    logits = policy(s)</span><br><span class="line">    prob = torch.softmax(logits, dim=-<span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 选动作（0=左，1=右）</span></span><br><span class="line">    a = torch.multinomial(prob, <span class="number">1</span>).item()</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 奖励：选右=得分，选左=不得分</span></span><br><span class="line">    r = <span class="number">1</span> <span class="keyword">if</span> a == <span class="number">1</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">    total_reward += r</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 保存：(状态, 动作) → 后面算梯度用</span></span><br><span class="line">    trajectory.append((s, a))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 切换状态（简化）</span></span><br><span class="line">    s = STATE_2 <span class="keyword">if</span> a == <span class="number">1</span> <span class="keyword">else</span> STATE_3</span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 4. 策略梯度核心代码！</span></span><br><span class="line"><span class="comment"># 对应公式：∇θ J(θ) = E[ ∑ ∇θ logπθ(a|s) * R(τ) ]</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line">optimizer.zero_grad()</span><br><span class="line">loss = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 遍历每一步动作</span></span><br><span class="line"><span class="keyword">for</span> s, a <span class="keyword">in</span> trajectory:</span><br><span class="line">    <span class="comment"># 计算 log πθ(a|s)</span></span><br><span class="line">    logits = policy(s)</span><br><span class="line">    log_prob = torch.log_softmax(logits, dim=-<span class="number">1</span>)[a]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 公式核心：log概率梯度 × 总奖励</span></span><br><span class="line">    <span class="comment"># ∇θ logπθ * R(τ)</span></span><br><span class="line">    loss += -log_prob * total_reward  <span class="comment"># 负号 = 梯度上升</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 平均 → 对应期望 E</span></span><br><span class="line">loss = loss / <span class="built_in">len</span>(trajectory)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 反向传播 → 更新参数 θ</span></span><br><span class="line">loss.backward()</span><br><span class="line">optimizer.step()</span><br><span class="line"></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="comment"># 输出结果</span></span><br><span class="line"><span class="comment"># ======================</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;这局总分 R(τ) = <span class="subst">&#123;total_reward&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;更新完成！智能体学会优先选【右】&quot;</span>)</span><br></pre></td></tr></table></figure></p>
 <p>==注意PG只是思想，算法思想，后续介绍一下PG的最简单的落地算法：REINFORCE==</p>
-<h1>4. 折扣未来回报$G_t$</h1>
+<h1 id="折扣未来回报g_t">4. 折扣未来回报<span
+class="math inline"><em>G</em><sub><em>t</em></sub></span></h1>
 <p>定义：智能体在某个时间步获得的即时奖励，加上未来所有奖励的折扣奖励总和，用于衡量当前状态或动作的长期价值。</p>
-<h2 id="4-1-折扣未来回报数学定义">4. 1 折扣未来回报数学定义</h2>
-<p>回报 $G_T$ 是从时间步（t）开始的所有的未来奖励的折扣和：$$G_t = R_t + \gamma R_{t+1} + \gamma^2R_{t+2} + \cdots = \sum_{k=0}^{\infty} \gamma^kR_{t+k}$$其中：</p>
+<h2 id="折扣未来回报数学定义">4. 1 折扣未来回报数学定义</h2>
+<p>回报 <span class="math inline"><em>G</em><sub><em>T</em></sub></span>
+是从时间步（t）开始的所有的未来奖励的折扣和：<span
+class="math display">$$G_t = R_t + \gamma R_{t+1} + \gamma^2R_{t+2} +
+\cdots = \sum_{k=0}^{\infty} \gamma^kR_{t+k}$$</span>其中： - <span
+class="math inline"><em>R</em><sub><em>t</em></sub></span>: 时间步 t
+的即时奖励 - <span
+class="math inline"><em>γ</em></span>：折扣因子，取值范围<span
+class="math inline"><em>γ</em> ∈ [0, 1]</span>，用于平衡即时奖励与未来奖励的重要性
+## 4.2 核心思想</p>
 <ul>
-<li>$R_t$: 时间步 t 的即时奖励</li>
-<li>$\gamma$：折扣因子，取值范围$\gamma \in [0, 1]$，用于平衡即时奖励与未来奖励的重要性</li>
-</ul>
-<h2 id="4-2-核心思想">4.2 核心思想</h2>
-<ul>
-<li>即时奖励（$R_t$）：当前Action带来的直接受益</li>
+<li>即时奖励（<span
+class="math inline"><em>R</em><sub><em>t</em></sub></span>）：当前Action带来的直接受益</li>
 <li>未来奖励的折扣：未来所有奖励按指数衰减加权求和，体现长期策略的价值。
 <ul>
-<li>$\gamma$ 越接近1：模型越重视长期受益（远视）</li>
-<li>$\gamma$ 越接近0：模型越关注短期受益（近视）</li>
+<li><span class="math inline"><em>γ</em></span>
+越接近1：模型越重视长期受益（远视）</li>
+<li><span class="math inline"><em>γ</em></span>
+越接近0：模型越关注短期受益（近视）</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<h2 id="4-2-为什么需要折扣因子">4.2 为什么需要折扣因子</h2>
+<h2 id="为什么需要折扣因子">4.2 为什么需要折扣因子</h2>
 <pre><code>1. 数学收敛性：无限时间步的奖励求和可能发散，折扣因子确保无穷级数收敛。
 2. 不确定性：未来奖励的预测通常不可靠，折扣降低了远期奖励的权重。
-3. 实际意义：人类和动物行为也更倾向于即时回报（如“延迟满足”需要更高激励）。
-</code></pre>
-<h1>5. REINFORCE算法原理</h1>
-<h2 id="5-1-REINFORCE更新公式">5.1 REINFORCE更新公式</h2>
-<p>$$\triangle \theta = \alpha \gamma^t G_t \nabla_\theta \log \pi_\theta(a_t|s_t)$$其中$G_t=\sum_{k=t}^{T}\gamma^{k-t}r_k$<br>
-推导过程直接问LLM。<br>
-伪代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Initialize θ arbitrarily</span><br><span class="line"><span class="keyword">for</span> episode <span class="keyword">in</span> <span class="built_in">range</span>(N_episodes):</span><br><span class="line">    Generate trajectory τ ~ π_θ</span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(τ)):</span><br><span class="line">        G_t = ∑_&#123;k=t&#125;^&#123;T&#125; γ^&#123;k-t&#125; r_k</span><br><span class="line">        θ ← θ + α γ^t G_t ∇_θ log π_θ(a_t|s_t)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h1>6. 价值函数（$V(s)$）与贝尔曼方程</h1>
-<h2 id="6-1-状态价值函数">6.1 状态价值函数</h2>
-<p>定义：从状态 $s$ 出发，遵循策略 $\pi$ 的期望回报。它衡量了处于某个状态的“长期价值”。$$V^\pi(s) = \mathbb{E}[G_t|S_t = s] = \mathbb{E}<em>\pi[\sum</em>{k=0}^{\infty} \gamma^k R_{t+k+1} | S_t = s]$$<strong>贝尔曼方程</strong>的推导：<br>
-将 $G_t$ 递归分解为“即时奖励”与“折扣后的未来回报”：$$V^\pi(s) = \sum_a \pi(a|s)\sum_{s’, r}P(s’, r|s, a)[r+\gamma V^\pi (s’)]$$<br>
-==通俗理解：当前状态的价值 = (即时期望奖励) + (折扣后的下一状态期望价值)==</p>
-<h2 id="6-2-分块理解贝尔曼方程">6.2 分块理解贝尔曼方程</h2>
-<ol>
-<li>最外层：按策略选动作<br>
-$$\sum_a \pi(a|s)$$</li>
+3. 实际意义：人类和动物行为也更倾向于即时回报（如“延迟满足”需要更高激励）。</code></pre>
+<h1 id="reinforce算法原理">5. REINFORCE算法原理</h1>
+<h2 id="reinforce更新公式">5.1 REINFORCE更新公式</h2>
+<p><span
+class="math display">△<em>θ</em> = <em>α</em><em>γ</em><sup><em>t</em></sup><em>G</em><sub><em>t</em></sub>∇<sub><em>θ</em></sub>log <em>π</em><sub><em>θ</em></sub>(<em>a</em><sub><em>t</em></sub>|<em>s</em><sub><em>t</em></sub>)</span>其中<span
+class="math inline">$G_t=\sum_{k=t}^{T}\gamma^{k-t}r_k$</span>
+推导过程直接问LLM。 伪代码： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Initialize θ arbitrarily</span><br><span class="line"><span class="keyword">for</span> episode <span class="keyword">in</span> <span class="built_in">range</span>(N_episodes):</span><br><span class="line">    Generate trajectory τ ~ π_θ</span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(τ)):</span><br><span class="line">        G_t = ∑_&#123;k=t&#125;^&#123;T&#125; γ^&#123;k-t&#125; r_k</span><br><span class="line">        θ ← θ + α γ^t G_t ∇_θ log π_θ(a_t|s_t)</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<h1 id="价值函数vs与贝尔曼方程">6. 价值函数（<span
+class="math inline"><em>V</em>(<em>s</em>)</span>）与贝尔曼方程</h1>
+<h2 id="状态价值函数">6.1 状态价值函数</h2>
+<p>定义：从状态 <span class="math inline"><em>s</em></span>
+出发，遵循策略 <span class="math inline"><em>π</em></span>
+的期望回报。它衡量了处于某个状态的“长期价值”。<span
+class="math display">$$V^\pi(s) = \mathbb{E}[G_t|S_t = s] =
+\mathbb{E}_\pi[\sum_{k=0}^{\infty} \gamma^k R_{t+k+1} | S_t =
+s]$$</span><strong>贝尔曼方程</strong>的推导： 将 <span
+class="math inline"><em>G</em><sub><em>t</em></sub></span>
+递归分解为“即时奖励”与“折扣后的未来回报”：<span
+class="math display"><em>V</em><sup><em>π</em></sup>(<em>s</em>) = ∑<sub><em>a</em></sub><em>π</em>(<em>a</em>|<em>s</em>)∑<sub><em>s</em><sup>′</sup>, <em>r</em></sub><em>P</em>(<em>s</em><sup>′</sup>, <em>r</em>|<em>s</em>, <em>a</em>)[<em>r</em> + <em>γ</em><em>V</em><sup><em>π</em></sup>(<em>s</em><sup>′</sup>)]</span>
+==通俗理解：当前状态的价值 = (即时期望奖励) +
+(折扣后的下一状态期望价值)==</p>
+<h2 id="分块理解贝尔曼方程">6.2 分块理解贝尔曼方程</h2>
+<ol type="1">
+<li>最外层：按策略选动作 <span
+class="math display">∑<sub><em>a</em></sub><em>π</em>(<em>a</em>|<em>s</em>)</span></li>
 </ol>
 <ul>
-<li>$\pi(a|s):$在状态 $s$ 下，按策略选动作 $a$ 的概率</li>
+<li><span
+class="math inline"><em>π</em>(<em>a</em>|<em>s</em>):</span>在状态
+<span class="math inline"><em>s</em></span> 下，按策略选动作 <span
+class="math inline"><em>a</em></span> 的概率</li>
 <li>求和：把所有可能动作的贡献加起来</li>
 <li>意思：对所有可能选的动作，按概率加权平均</li>
 </ul>
-<ol start="2">
-<li>第二层：按环境转移概率看下一步<br>
-$$\sum_{s’, r}P(s’, r|s, a)$$</li>
+<ol start="2" type="1">
+<li>第二层：按环境转移概率看下一步 <span
+class="math display">∑<sub><em>s</em><sup>′</sup>, <em>r</em></sub><em>P</em>(<em>s</em><sup>′</sup>, <em>r</em>|<em>s</em>, <em>a</em>)</span></li>
 </ol>
 <ul>
-<li>$P(s’, r|s, a):$在状态 $s$ 做动作 $a$ ，转移到 $s’$ 并拿到奖励 $r$ 的概率</li>
+<li><span
+class="math inline"><em>P</em>(<em>s</em><sup>′</sup>, <em>r</em>|<em>s</em>, <em>a</em>):</span>在状态
+<span class="math inline"><em>s</em></span> 做动作 <span
+class="math inline"><em>a</em></span> ，转移到 <span
+class="math inline"><em>s</em><sup>′</sup></span> 并拿到奖励 <span
+class="math inline"><em>r</em></span> 的概率</li>
 <li>求和：把所有可能的下一个状态和奖励加起来</li>
-<li>意思：<strong>对所有kennel的「下一个状态 + 奖励」，按环境概率加权平均</strong></li>
+<li>意思：<strong>对所有kennel的「下一个状态 +
+奖励」，按环境概率加权平均</strong></li>
 </ul>
-<ol start="3">
-<li>最里面的核心：贝尔曼递推关系<br>
-$$[r + \gamma V^\pi(s’)]$$</li>
+<ol start="3" type="1">
+<li>最里面的核心：贝尔曼递推关系 <span
+class="math display">[<em>r</em> + <em>γ</em><em>V</em><sup><em>π</em></sup>(<em>s</em><sup>′</sup>)]</span></li>
 </ol>
 <ul>
-<li>$r:$当前步拿到的即时奖励</li>
-<li>$V^\pi(s’):$下一个状态 $s’$ 的价值函数</li>
-<li>$\gamma:$折扣因子，把未来价值打个折</li>
-<li>意思：<strong>当前的总价值=现在拿的钱 + 未来可能拿的钱的期望</strong></li>
+<li><span
+class="math inline"><em>r</em>:</span>当前步拿到的即时奖励</li>
+<li><span
+class="math inline"><em>V</em><sup><em>π</em></sup>(<em>s</em><sup>′</sup>):</span>下一个状态
+<span class="math inline"><em>s</em><sup>′</sup></span> 的价值函数</li>
+<li><span
+class="math inline"><em>γ</em>:</span>折扣因子，把未来价值打个折</li>
+<li>意思：<strong>当前的总价值=现在拿的钱 +
+未来可能拿的钱的期望</strong></li>
 </ul>
-<h1>7. LLM中的强化学习</h1>
-<h2 id="7-1-NLP任务中Agent、Env、State、Action">7.1 NLP任务中Agent、Env、State、Action</h2>
-<p><img src="https://i-blog.csdnimg.cn/img_convert/c42814fe863b754a6a74b2aa77e86b96.jpeg" alt="img"><a target="_blank" rel="noopener" href="https://blog.csdn.net/jennycisp/article/details/147693344">原文</a><br>
-流程：</p>
-<blockquote>
+<h1 id="llm中的强化学习">7. LLM中的强化学习</h1>
+<h2 id="nlp任务中agentenvstateaction">7.1
+NLP任务中Agent、Env、State、Action</h2>
+<p><img
+src="https://i-blog.csdnimg.cn/img_convert/c42814fe863b754a6a74b2aa77e86b96.jpeg"
+alt="img" /><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/jennycisp/article/details/147693344">原文</a>
+流程： &gt; -
+我们先投喂给模型一个prompt，期望他能产出符合人类喜好哦哦的responsssse
+&gt; - 在 t
+时刻，根据模型上下文，产出一个token，这个token即对应着强化学习中的动作，我们记为Action。因此，不难理解，在NLP语境下，强化学习任务的动作空间就对应着词表
+&gt; - 在 t 时刻，模型产出token Action对应着的即时收益为 <span
+class="math inline"><em>R</em><sub><em>t</em></sub></span> ，总收益为
+<span class="math inline"><em>V</em><sub><em>t</em></sub></span>
+（蕴含着即时受益与未来收益两个内容），这个收益即可以理解为“对人类喜好的衡量”。此刻，模型的状态从
+<span class="math inline"><em>S</em><sub><em>t</em></sub></span> 变为
+<span
+class="math inline"><em>S</em><sub><em>t</em> + 1</sub></span>，也就是从“上文”变为“上文+新产出token”
+&gt; - 在NLP语境下，Agent即为LLM模型本身，环境则对应它产出的预料</p>
+<h2 id="rlhf中四个重要角色">7.2 RLHF中四个重要角色</h2>
+<figure>
+<img
+src="https://i-blog.csdnimg.cn/img_convert/cb905841126571879bcd6f92d16f17e8.jpeg"
+alt="img" />
+<figcaption aria-hidden="true">img</figcaption>
+</figure>
+<p>如上图，在RLHF-PPO阶段，一共有四个主要模型，分别是： - Actor
+Model：演员模型，这就是我们想要训练的目标语言模型 - Critic
+Model：评论家模型，它的作用是估计总收益 <span
+class="math inline"><em>V</em><sub><em>t</em></sub></span> - Reward
+Model：奖励模型，它的作用是计算即时收益 <span
+class="math inline"><em>R</em><sub><em>t</em></sub></span> - Reference
+Mode：参考模型，它的作用是在RLHF阶段给语言模型加一些约束，防止模型训歪（朝不受控制的方向更新，效果可能越来越差）</p>
+<p>其中： - <strong>Actor/Critic Model：</strong>
+在RLHF阶段是需要训练的（图中给这两个模型加了粗边）；而Reward/Reference
+Model是<strong>参数冻结</strong>的。 - Critic/Reward/Reference
+Model共同组成了一个“奖励-loss”计算体系，综合他们的结果计算loss，用于更新Actor和Critic
+Model</p>
+<h3 id="actor-model">7.2.1 Actor Model</h3>
+<p><strong>Actor Model</strong> 就是要训练的目标语言模型。我们一般用 SFT
+阶段产出的 SFT 模型来对它做初始化。 <img
+src="https://i-blog.csdnimg.cn/img_convert/bf315a11541056e173c3410cf95981ec.jpeg"
+alt="img" /> 本模型设计的目标：让 Actor Model 能产生符合人类喜好的
+Response。所以我们的策略是，先喂给 Actor 一条
+prompt，让它生成对应的Response。然后，我们再将“prompt +
+response”送入我们的“奖励-loss”计算体系中去算得最后的loss，用于更新
+Actor。</p>
+<h3 id="reference-model参考模型">7.2.2 Reference Model（参考模型）</h3>
+<p><strong>Reference Model：</strong> 以下简称 Ref 模型，一般也用
+<strong>SFT</strong> 阶段得到的 SFT
+模型做初始化，在RLHF训练过程中，它的参数是冻结的。 Ref
+模型的主要作用是防止 Actor 训歪。 <img
+src="https://i-blog.csdnimg.cn/img_convert/5de26c9610323f06306c9b2e1f9c325f.jpeg"
+alt="img" />
+“防止模型训歪”换一个更详细的解释是：<strong>我们希望训练出来的Actor模型既能达到符合人类喜好的目的，又尽量让它和SFT模型不要差异太大</strong>。简言之，<strong>我们希望两个模型的输出分布尽量相似</strong>。那什么指标能用来衡量输出分布的相似度呢？我们自然而然想到了<strong>KL散度</strong>[[[#7.2.2.1
+KL（KL Divergence） 散度]]。</p>
+<p>如图所示： - <strong>对 Actor Model：</strong> 我们喂给他一个
+prompt，它正常输出对应的
+response，那么response中每一个token肯定有它对应的 log_prob
+结果，我们把这样的结果记为 log_probs - 对 <strong>Ref</strong>：把 Actor
+生成的 ==“prompt + response”==喂给他，那么它同样能给出每个 token 的
+log_prob 结果，我们记其为 ref_log_probs - 上文的概率 probs
+表示概率，这个概率就是 LLM 在最后一层 softmax
+输出的概率，在reference并不需要输出 token，而是为个个 token
+找相对应的概率即可。</p>
+<p><strong><em>工程上的计算方法</em></strong>： - 模型按 <span
+class="math inline"><em>π</em><sub><em>θ</em></sub></span>​ 生成回答
+<span
+class="math inline"><em>y</em>1​, <em>y</em>2​, ..., <em>y</em><sup><em>T</em></sup></span>​
+- 对每个位置 <span class="math inline"><em>t</em></span>，同时算：</p>
+<pre><code>- 当前模型的概率：$\log \pi_\theta ​(y_t​∣x,y_{1:t−1}​)$
+- 参考模型的概率：$\log \pi_{ref} ​(y_t​∣x,y_{1:t−1​})$</code></pre>
 <ul>
-<li>我们先投喂给模型一个prompt，期望他能产出符合人类喜好哦哦的responsssse</li>
-<li>在 t 时刻，根据模型上下文，产出一个token，这个token即对应着强化学习中的动作，我们记为Action。因此，不难理解，在NLP语境下，强化学习任务的动作空间就对应着词表</li>
-<li>在 t 时刻，模型产出token Action对应着的即时收益为 $R_t$ ，总收益为 $V_t$ （蕴含着即时受益与未来收益两个内容），这个收益即可以理解为“对人类喜好的衡量”。此刻，模型的状态从 $S_t$ 变为 $S_{t+1}$，也就是从“上文”变为“上文+新产出token”</li>
-<li>在NLP语境下，Agent即为LLM模型本身，环境则对应它产出的预料</li>
+<li>单步 KL 近似：<span
+class="math inline"><em>K</em><em>L</em><sub><em>t</em></sub>​ ≈ log <em>π</em><sub><em>θ</em></sub>​(<em>y</em><sub><em>t</em></sub>) − log <em>π</em><sub><em>r</em><em>e</em><em>f</em></sub>​(<em>y</em><sub><em>t</em></sub>​)</span></li>
+<li>整句 KL：<span class="math inline">$KL_{seq} ​= \frac{1}{T}
+\sum​_{t=1}^T​ KL_t$</span></li>
 </ul>
-</blockquote>
-<h2 id="7-2-RLHF中四个重要角色">7.2 RLHF中四个重要角色</h2>
-<p><img src="https://i-blog.csdnimg.cn/img_convert/cb905841126571879bcd6f92d16f17e8.jpeg" alt="img"></p>
-<p>如上图，在RLHF-PPO阶段，一共有四个主要模型，分别是：</p>
-<ul>
-<li>Actor Model：演员模型，这就是我们想要训练的目标语言模型</li>
-<li>Critic Model：评论家模型，它的作用是估计总收益 $V_t$</li>
-<li>Reward Model：奖励模型，它的作用是计算即时收益 $R_t$</li>
-<li>Reference Mode：参考模型，它的作用是在RLHF阶段给语言模型加一些约束，防止模型训歪（朝不受控制的方向更新，效果可能越来越差）</li>
-</ul>
-<p>其中：</p>
-<ul>
-<li><strong>Actor/Critic Model：</strong> 在RLHF阶段是需要训练的（图中给这两个模型加了粗边）；而Reward/Reference Model是<strong>参数冻结</strong>的。</li>
-<li>Critic/Reward/Reference Model共同组成了一个“奖励-loss”计算体系，综合他们的结果计算loss，用于更新Actor和Critic Model</li>
-</ul>
-<h3 id="7-2-1-Actor-Model">7.2.1 Actor Model</h3>
-<p><strong>Actor Model</strong> 就是要训练的目标语言模型。我们一般用 SFT 阶段产出的 SFT 模型来对它做初始化。<br>
-<img src="https://i-blog.csdnimg.cn/img_convert/bf315a11541056e173c3410cf95981ec.jpeg" alt="img"><br>
-本模型设计的目标：让 Actor Model 能产生符合人类喜好的 Response。所以我们的策略是，先喂给 Actor 一条 prompt，让它生成对应的Response。然后，我们再将“prompt + response&quot;送入我们的“奖励-loss”计算体系中去算得最后的loss，用于更新 Actor。</p>
-<h3 id="7-2-2-Reference-Model（参考模型）">7.2.2 Reference Model（参考模型）</h3>
-<p><strong>Reference Model：</strong> 以下简称 Ref 模型，一般也用 <strong>SFT</strong> 阶段得到的 SFT 模型做初始化，在RLHF训练过程中，它的参数是冻结的。 Ref 模型的主要作用是防止 Actor 训歪。<br>
-<img src="https://i-blog.csdnimg.cn/img_convert/5de26c9610323f06306c9b2e1f9c325f.jpeg" alt="img"><br>
-“防止模型训歪”换一个更详细的解释是：<strong>我们希望训练出来的Actor模型既能达到符合人类喜好的目的，又尽量让它和SFT模型不要差异太大</strong>。简言之，<strong>我们希望两个模型的输出分布尽量相似</strong>。那什么指标能用来衡量输出分布的相似度呢？我们自然而然想到了<strong>KL散度</strong>[[[#7.2.2.1 KL（KL Divergence） 散度]]。</p>
-<p>如图所示：</p>
-<ul>
-<li><strong>对 Actor Model：</strong> 我们喂给他一个 prompt，它正常输出对应的 response，那么response中每一个token肯定有它对应的 log_prob 结果，我们把这样的结果记为 log_probs</li>
-<li>对 <strong>Ref</strong>：把 Actor 生成的 ==“prompt + response”==喂给他，那么它同样能给出每个 token 的 log_prob 结果，我们记其为 ref_log_probs</li>
-<li>上文的概率 probs 表示概率，这个概率就是 LLM 在最后一层 softmax 输出的概率，在reference并不需要输出 token，而是为个个 token 找相对应的概率即可。</li>
-</ul>
-<p><em><strong>工程上的计算方法</strong></em>：</p>
-<ul>
-<li>
-<p>模型按 $\pi_\theta$​ 生成回答 $y1​,y2​,…,y^T$​</p>
-</li>
-<li>
-<p>对每个位置 $t$，同时算：</p>
-<ul>
-<li>当前模型的概率：$\log \pi_\theta ​(y_t​∣x,y_{1:t−1}​)$</li>
-<li>参考模型的概率：$\log \pi_{ref} ​(y_t​∣x,y_{1:t−1​})$</li>
-</ul>
-</li>
-<li>
-<p>单步 KL 近似：$KL_t​ \approx \log \pi_\theta ​(y_t)− \log \pi_{ref}​(y_t​)$</p>
-</li>
-<li>
-<p>整句 KL：$KL_{seq} ​= \frac{1}{T} \sum​_{t=1}^T​ KL_t$</p>
-</li>
-</ul>
-<p>​</p>
-<h4 id="7-2-2-1-KL（KL-Divergence）-散度">7.2.2.1 KL（KL Divergence） 散度</h4>
+<p>​ #### 7.2.2.1 KL（KL Divergence） 散度</p>
 <p>衡量两个分布「像不像、差多大」，也叫做<strong>相对熵</strong></p>
-<p>给定两个离散概率分布 $P(x)(真实分布)$、$Q(x)(近似、预测分布)$:<br>
-$$D_{\text{KL}} (P \parallel Q) = \sum_{x} P(x) \log \frac{P(x)}{Q(x)}$$<br>
-连续分布的形式：<br>
-$$D_{\text{KL}}(P \parallel Q) = \int P(x) \log \frac{P(x)}{Q(x)} , dx$$</p>
-<p>公式拆解：<br>
-$$D_{\text{KL}}(P\parallel Q) = \mathbb{E}_P [\log P(x)] - \mathbb{E}_P [\log Q(x)]$$</p>
-<ul>
-<li>$- \mathbb{E}_P[\log P(x)]$: 信息熵（Entropy）</li>
-<li>$-\mathbb{E}_P[\log Q(x)]$: 交叉熵（Cross-Entropy）</li>
-</ul>
-<p>所以：👉 <strong>KL 散度 = 交叉熵 − 信息熵</strong>，这也是深度学习里用交叉熵做损失的原因：真实分布熵固定，最小化交叉熵 = 等价于最小化 KL 散度 = 让模型分布贴近真实分布</p>
+<p>给定两个离散概率分布 <span
+class="math inline"><em>P</em>(<em>x</em>)(<em>真</em><em>实</em><em>分</em><em>布</em>)</span>、<span
+class="math inline"><em>Q</em>(<em>x</em>)(<em>近</em><em>似</em>、<em>预</em><em>测</em><em>分</em><em>布</em>)</span>:
+<span class="math display">$$D_{\text{KL}} (P \parallel Q) = \sum_{x}
+P(x) \log \frac{P(x)}{Q(x)}$$</span> 连续分布的形式： <span
+class="math display">$$D_{\text{KL}}(P \parallel Q) = \int P(x) \log
+\frac{P(x)}{Q(x)} \, dx$$</span></p>
+<p>公式拆解： <span
+class="math display"><em>D</em><sub>KL</sub>(<em>P</em> ∥ <em>Q</em>) = 𝔼<sub><em>P</em></sub>[log <em>P</em>(<em>x</em>)] − 𝔼<sub><em>P</em></sub>[log <em>Q</em>(<em>x</em>)]</span>
+- <span
+class="math inline">−𝔼<sub><em>P</em></sub>[log <em>P</em>(<em>x</em>)]</span>:
+信息熵（Entropy） - <span
+class="math inline">−𝔼<sub><em>P</em></sub>[log <em>Q</em>(<em>x</em>)]</span>:
+交叉熵（Cross-Entropy）</p>
+<p>所以：👉 <strong>KL 散度 = 交叉熵 −
+信息熵</strong>，这也是深度学习里用交叉熵做损失的原因：真实分布熵固定，最小化交叉熵
+= 等价于最小化 KL 散度 = 让模型分布贴近真实分布</p>
 
   </div>
 </article>
@@ -400,7 +482,8 @@ $$D_{\text{KL}}(P\parallel Q) = \mathbb{E}_P [\log P(x)] - \mathbb{E}_P [\log Q(
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 核心思想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 强化学习基础回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E7%AD%96%E7%95%A5%E7%9A%84%E6%9C%AC%E8%B4%A8"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 策略的本质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E5%8F%82%E6%95%B0%E5%8C%96%E6%84%8F%E4%B9%89"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 参数化意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-Policy-Gradient%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 Policy Gradient的核心思想</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 优势</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">3. Policy Gradient 定理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 推导过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">4. 折扣未来回报$G_t$</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5%E6%95%B0%E5%AD%A6%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">4. 1 折扣未来回报数学定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 核心思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%8A%98%E6%89%A3%E5%9B%A0%E5%AD%90"><span class="toc-number">4.3.</span> <span class="toc-text">4.2 为什么需要折扣因子</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">5.</span> <span class="toc-text">5. REINFORCE算法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#5-1-REINFORCE%E6%9B%B4%E6%96%B0%E5%85%AC%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 REINFORCE更新公式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">6.</span> <span class="toc-text">6. 价值函数（$V(s)$）与贝尔曼方程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#6-1-%E7%8A%B6%E6%80%81%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 状态价值函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-2-%E5%88%86%E5%9D%97%E7%90%86%E8%A7%A3%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 分块理解贝尔曼方程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">7.</span> <span class="toc-text">7. LLM中的强化学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#7-1-NLP%E4%BB%BB%E5%8A%A1%E4%B8%ADAgent%E3%80%81Env%E3%80%81State%E3%80%81Action"><span class="toc-number">7.1.</span> <span class="toc-text">7.1 NLP任务中Agent、Env、State、Action</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-2-RLHF%E4%B8%AD%E5%9B%9B%E4%B8%AA%E9%87%8D%E8%A6%81%E8%A7%92%E8%89%B2"><span class="toc-number">7.2.</span> <span class="toc-text">7.2 RLHF中四个重要角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-1-Actor-Model"><span class="toc-number">7.2.1.</span> <span class="toc-text">7.2.1 Actor Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-2-Reference-Model%EF%BC%88%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="toc-number">7.2.2.</span> <span class="toc-text">7.2.2 Reference Model（参考模型）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-2-1-KL%EF%BC%88KL-Divergence%EF%BC%89-%E6%95%A3%E5%BA%A6"><span class="toc-number">7.2.2.1.</span> <span class="toc-text">7.2.2.1 KL（KL Divergence） 散度</span></a></li></ol></li></ol></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.</span> <span class="toc-text">1. 核心思想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 强化学习基础回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E6%84%8F%E4%B9%89"><span class="toc-number">1.2.</span> <span class="toc-text">1.3 参数化意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#policy-gradient%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.3.</span> <span class="toc-text">1.4 Policy Gradient的核心思想</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF"><span class="toc-number">2.</span> <span class="toc-text">2. 优势</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#policy-gradient-%E5%AE%9A%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">3. Policy Gradient 定理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 推导过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5g_t"><span class="toc-number">4.</span> <span class="toc-text">4. 折扣未来回报Gt</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5%E6%95%B0%E5%AD%A6%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">4. 1 折扣未来回报数学定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%8A%98%E6%89%A3%E5%9B%A0%E5%AD%90"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 为什么需要折扣因子</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reinforce%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">5. REINFORCE算法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#reinforce%E6%9B%B4%E6%96%B0%E5%85%AC%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 REINFORCE更新公式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0vs%E4%B8%8E%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.</span> <span class="toc-text">6. 价值函数（V(s)）与贝尔曼方程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 状态价值函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%9D%97%E7%90%86%E8%A7%A3%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 分块理解贝尔曼方程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#llm%E4%B8%AD%E7%9A%84%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0"><span class="toc-number">7.</span> <span class="toc-text">7. LLM中的强化学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#nlp%E4%BB%BB%E5%8A%A1%E4%B8%ADagentenvstateaction"><span class="toc-number">7.1.</span> <span class="toc-text">7.1
+NLP任务中Agent、Env、State、Action</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rlhf%E4%B8%AD%E5%9B%9B%E4%B8%AA%E9%87%8D%E8%A6%81%E8%A7%92%E8%89%B2"><span class="toc-number">7.2.</span> <span class="toc-text">7.2 RLHF中四个重要角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#actor-model"><span class="toc-number">7.2.1.</span> <span class="toc-text">7.2.1 Actor Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reference-model%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B"><span class="toc-number">7.2.2.</span> <span class="toc-text">7.2.2 Reference Model（参考模型）</span></a></li></ol></li></ol></li></ol>
       </div>
     
 

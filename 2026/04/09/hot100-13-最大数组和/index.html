@@ -137,7 +137,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 思路代码</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%E4%BB%A3%E7%A0%81"><span class="toc-number">2.</span> <span class="toc-text">2. 思路代码</span></a></li></ol>
       </div>
     
   </span>
@@ -182,11 +182,12 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h1>1. 题目链接</h1>
-<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-subarray/">Leetcode 13. 最大数组和</a></p>
-<h1>2. 思路代码</h1>
-<p>动态规划，依次计算出以当前数组位置结尾的最大数组和</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">maxSubArray</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        ans = -inf</span><br><span class="line">        f = <span class="number">0</span>  <span class="comment"># 以当前位置结尾的最大的数组和</span></span><br><span class="line">        <span class="keyword">for</span> num <span class="keyword">in</span> nums:</span><br><span class="line">            <span class="comment"># 1. 计算以当前位置结尾的最大数组和</span></span><br><span class="line">            f = <span class="built_in">max</span>(f + num, num)</span><br><span class="line">            <span class="comment"># 2. 检查是否更新最大数组和</span></span><br><span class="line">            ans = <span class="built_in">max</span>(ans, f)</span><br><span class="line">        <span class="keyword">return</span> ans </span><br></pre></td></tr></table></figure>
+    <h1 id="题目链接">1. 题目链接</h1>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-subarray/">Leetcode 13.
+最大数组和</a></p>
+<h1 id="思路代码">2. 思路代码</h1>
+<p>动态规划，依次计算出以当前数组位置结尾的最大数组和 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">maxSubArray</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        ans = -inf</span><br><span class="line">        f = <span class="number">0</span>  <span class="comment"># 以当前位置结尾的最大的数组和</span></span><br><span class="line">        <span class="keyword">for</span> num <span class="keyword">in</span> nums:</span><br><span class="line">            <span class="comment"># 1. 计算以当前位置结尾的最大数组和</span></span><br><span class="line">            f = <span class="built_in">max</span>(f + num, num)</span><br><span class="line">            <span class="comment"># 2. 检查是否更新最大数组和</span></span><br><span class="line">            ans = <span class="built_in">max</span>(ans, f)</span><br><span class="line">        <span class="keyword">return</span> ans </span><br></pre></td></tr></table></figure></p>
+
   </div>
 </article>
 
@@ -213,7 +214,7 @@
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 思路代码</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%E4%BB%A3%E7%A0%81"><span class="toc-number">2.</span> <span class="toc-text">2. 思路代码</span></a></li></ol>
       </div>
     
 
