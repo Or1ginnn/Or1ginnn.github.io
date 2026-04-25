@@ -137,7 +137,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%E5%8F%8A%E4%BB%A3%E7%A0%81"><span class="toc-number">2.</span> <span class="toc-text">2. 思路及代码</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 思路及代码</span></a></li></ol>
       </div>
     
   </span>
@@ -182,13 +182,10 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h1 id="题目链接">1. 题目链接</h1>
-<p><a
-target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-window-substring/">Leetcode
-11. 最小覆盖子串</a></p>
-<h1 id="思路及代码">2. 思路及代码</h1>
+    <h1>1. 题目链接</h1>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-window-substring/">Leetcode 11. 最小覆盖子串</a></p>
+<h1>2. 思路及代码</h1>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">minWindow</span>(<span class="params">self, s: <span class="built_in">str</span>, t: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">        ans_left, ans_right = -<span class="number">1</span>, <span class="built_in">len</span>(s)</span><br><span class="line">        left = <span class="number">0</span></span><br><span class="line">        <span class="comment"># cnt_t = Counter(t)</span></span><br><span class="line">        <span class="comment"># defaultdict() 要比 Counter快很多</span></span><br><span class="line">        <span class="comment"># 1. 首先对 t 中元素计数 等同于 Counter</span></span><br><span class="line">        cnt_t = defaultdict(<span class="built_in">int</span>)</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> t:</span><br><span class="line">            cnt_t[c] += <span class="number">1</span></span><br><span class="line">        kind_of_t = <span class="built_in">len</span>(cnt_t)</span><br><span class="line">        kind_of_s = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> right, c <span class="keyword">in</span> <span class="built_in">enumerate</span>(s):</span><br><span class="line">            cnt_t[c] -= <span class="number">1</span></span><br><span class="line">            <span class="comment"># 2. 通过kind_of_s 来判断是否已经包含了全部 t 串</span></span><br><span class="line">            <span class="keyword">if</span> cnt_t[c] == <span class="number">0</span>:</span><br><span class="line">                kind_of_s += <span class="number">1</span></span><br><span class="line">            <span class="comment"># 3. 当前已包含全部 t 串，检查当前串最小多少能包含所有的 t</span></span><br><span class="line">            <span class="keyword">while</span> kind_of_s == kind_of_t:</span><br><span class="line">                <span class="keyword">if</span> ans_right - ans_left &gt; right - left:</span><br><span class="line">                    ans_left, ans_right = left, right</span><br><span class="line">                </span><br><span class="line">                <span class="comment"># 4. X关键X：窗口滑动后移</span></span><br><span class="line">                x = s[left]</span><br><span class="line">                <span class="keyword">if</span> cnt_t[x] == <span class="number">0</span>:</span><br><span class="line">                    kind_of_s -= <span class="number">1</span></span><br><span class="line">                </span><br><span class="line">                cnt_t[x] += <span class="number">1</span></span><br><span class="line">                left += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 5. ana_left为-1表示没有包含的串</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span> <span class="keyword">if</span> ans_left == -<span class="number">1</span> <span class="keyword">else</span> s[ans_left:ans_right + <span class="number">1</span>]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
   </div>
 </article>
 
@@ -215,7 +212,7 @@ target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-window
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%E5%8F%8A%E4%BB%A3%E7%A0%81"><span class="toc-number">2.</span> <span class="toc-text">2. 思路及代码</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 思路及代码</span></a></li></ol>
       </div>
     
 

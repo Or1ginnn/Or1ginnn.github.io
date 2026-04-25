@@ -136,7 +136,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E8%A7%A3"><span class="toc-number">2.</span> <span class="toc-text">2. 题解</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 题解</span></a></li></ol>
       </div>
     
   </span>
@@ -181,12 +181,10 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h1 id="题目链接">1. 题目链接</h1>
-<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/rotate-array">Leetcode 15.
-轮转数组</a></p>
-<h1 id="题解">2. 题解</h1>
+    <h1>1. 题目链接</h1>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/rotate-array">Leetcode 15. 轮转数组</a></p>
+<h1>2. 题解</h1>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">rotate</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Do not return anything, modify nums in-place instead.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        k1 = k % <span class="built_in">len</span>(nums)</span><br><span class="line">        <span class="comment"># nums[:] = nums[-k1:] + nums[:len(nums)-k1]</span></span><br><span class="line">        <span class="comment"># 上面的表达式在 k = 0的时候失效</span></span><br><span class="line">        nums[:] = nums[-k1: ] + nums[: -k1]</span><br></pre></td></tr></table></figure>
-
   </div>
 </article>
 
@@ -213,7 +211,7 @@
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E8%A7%A3"><span class="toc-number">2.</span> <span class="toc-text">2. 题解</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 题解</span></a></li></ol>
       </div>
     
 

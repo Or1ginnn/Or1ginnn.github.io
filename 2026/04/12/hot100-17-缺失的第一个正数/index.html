@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="1. 题目链接 Leetcode 17. 缺失的第一个正数 2. 思路及代码 这道题思路特别不容易想，最简单的方法就是直接看看答案。 - 思路：数组长度 n，那正整数一定是小于等于 n + 1，所以通过循环换座位的方式，将 1～n 归位，循环1～n发现未归位的元素，即为答案，若全部归为，则答案为 n+1 。 1234567891011121314class Solution:    def fir">
+    <meta name="description" content="1. 题目链接 Leetcode 17. 缺失的第一个正数 2. 思路及代码 这道题思路特别不容易想，最简单的方法就是直接看看答案。  思路：数组长度 n，那正整数一定是小于等于 n + 1，所以通过循环换座位的方式，将 1～n 归位，循环1～n发现未归位的元素，即为答案，若全部归为，则答案为 n+1 。  1234567891011121314class Solution:    def fir">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hot100 - 17 - 缺失的第一个正数">
 <meta property="og:url" content="https://or1ginnn.github.io/2026/04/12/hot100-17-%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/index.html">
 <meta property="og:site_name" content="Or1gin的博客">
-<meta property="og:description" content="1. 题目链接 Leetcode 17. 缺失的第一个正数 2. 思路及代码 这道题思路特别不容易想，最简单的方法就是直接看看答案。 - 思路：数组长度 n，那正整数一定是小于等于 n + 1，所以通过循环换座位的方式，将 1～n 归位，循环1～n发现未归位的元素，即为答案，若全部归为，则答案为 n+1 。 1234567891011121314class Solution:    def fir">
+<meta property="og:description" content="1. 题目链接 Leetcode 17. 缺失的第一个正数 2. 思路及代码 这道题思路特别不容易想，最简单的方法就是直接看看答案。  思路：数组长度 n，那正整数一定是小于等于 n + 1，所以通过循环换座位的方式，将 1～n 归位，循环1～n发现未归位的元素，即为答案，若全部归为，则答案为 n+1 。  1234567891011121314class Solution:    def fir">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-04-12T07:11:00.000Z">
 <meta property="article:modified_time" content="2026-04-12T07:14:49.192Z">
@@ -136,7 +136,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%E5%8F%8A%E4%BB%A3%E7%A0%81"><span class="toc-number">2.</span> <span class="toc-text">2. 思路及代码</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 思路及代码</span></a></li></ol>
       </div>
     
   </span>
@@ -181,17 +181,14 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <h1 id="题目链接">1. 题目链接</h1>
-<p><a
-target="_blank" rel="noopener" href="https://leetcode.cn/problems/first-missing-positive/">Leetcode 17.
-缺失的第一个正数</a></p>
-<h1 id="思路及代码">2. 思路及代码</h1>
-<p>这道题思路特别不容易想，最简单的方法就是直接看看答案。 -
-思路：数组长度 n，那正整数一定是小于等于 n +
-1，所以通过循环换座位的方式，将 <em>1～n</em>
-归位，循环1～n发现未归位的元素，即为答案，若全部归为，则答案为 n+1 。
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">firstMissingPositive</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        n = <span class="built_in">len</span>(nums)</span><br><span class="line">        i = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> i &lt; n:</span><br><span class="line">            <span class="keyword">while</span> <span class="number">1</span> &lt;= nums[i] &lt;=n <span class="keyword">and</span> nums[nums[i] - <span class="number">1</span>] != nums[i]:</span><br><span class="line">                nums[nums[i] - <span class="number">1</span>], nums[i] = nums[i], nums[nums[i] - <span class="number">1</span>]</span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line">            </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] != i + <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line">            </span><br></pre></td></tr></table></figure></p>
-
+    <h1>1. 题目链接</h1>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/first-missing-positive/">Leetcode 17. 缺失的第一个正数</a></p>
+<h1>2. 思路及代码</h1>
+<p>这道题思路特别不容易想，最简单的方法就是直接看看答案。</p>
+<ul>
+<li>思路：数组长度 n，那正整数一定是小于等于 n + 1，所以通过循环换座位的方式，将 <em>1～n</em> 归位，循环1～n发现未归位的元素，即为答案，若全部归为，则答案为 n+1 。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">firstMissingPositive</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        n = <span class="built_in">len</span>(nums)</span><br><span class="line">        i = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> i &lt; n:</span><br><span class="line">            <span class="keyword">while</span> <span class="number">1</span> &lt;= nums[i] &lt;=n <span class="keyword">and</span> nums[nums[i] - <span class="number">1</span>] != nums[i]:</span><br><span class="line">                nums[nums[i] - <span class="number">1</span>], nums[i] = nums[i], nums[nums[i] - <span class="number">1</span>]</span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line">            </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] != i + <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line">            </span><br></pre></td></tr></table></figure>
   </div>
 </article>
 
@@ -218,7 +215,7 @@ target="_blank" rel="noopener" href="https://leetcode.cn/problems/first-missing-
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%E5%8F%8A%E4%BB%A3%E7%A0%81"><span class="toc-number">2.</span> <span class="toc-text">2. 思路及代码</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">1. 题目链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. 思路及代码</span></a></li></ol>
       </div>
     
 
