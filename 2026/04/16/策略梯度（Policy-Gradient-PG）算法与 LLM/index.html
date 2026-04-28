@@ -14,7 +14,7 @@
 <meta property="og:description" content="1. 核心思想 直接优化策略 1.1 强化学习基础回顾  智能体（Agent）：与环境交互、学习策略 环境（Environment）：提出状态（State）、奖励（Reward） 策略（Policy）：状态 -&gt; 动作的映射规则  确定性策略：π(a|s) -&gt; 直接输出动作 随机性策略：πθ(a|s) -&gt; 输出动作概率分布（PG 常用） ### 1.2 策略的本质   在强化">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-04-16T03:25:58.000Z">
-<meta property="article:modified_time" content="2026-04-22T08:52:55.117Z">
+<meta property="article:modified_time" content="2026-04-28T11:02:32.480Z">
 <meta property="article:author" content="Or1ginnn">
 <meta property="article:tag" content="LLM">
 <meta property="article:tag" content="PG">
@@ -139,7 +139,7 @@
     
       <div id="toc">
         <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.</span> <span class="toc-text">1. 核心思想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 强化学习基础回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E6%84%8F%E4%B9%89"><span class="toc-number">1.2.</span> <span class="toc-text">1.3 参数化意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#policy-gradient%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.3.</span> <span class="toc-text">1.4 Policy Gradient的核心思想</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF"><span class="toc-number">2.</span> <span class="toc-text">2. 优势</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#policy-gradient-%E5%AE%9A%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">3. Policy Gradient 定理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 推导过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5g_t"><span class="toc-number">4.</span> <span class="toc-text">4. 折扣未来回报Gt</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5%E6%95%B0%E5%AD%A6%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">4. 1 折扣未来回报数学定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%8A%98%E6%89%A3%E5%9B%A0%E5%AD%90"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 为什么需要折扣因子</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reinforce%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">5. REINFORCE算法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#reinforce%E6%9B%B4%E6%96%B0%E5%85%AC%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 REINFORCE更新公式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0vs%E4%B8%8E%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.</span> <span class="toc-text">6. 价值函数（V(s)）与贝尔曼方程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 状态价值函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%9D%97%E7%90%86%E8%A7%A3%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 分块理解贝尔曼方程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#llm%E4%B8%AD%E7%9A%84%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0"><span class="toc-number">7.</span> <span class="toc-text">7. LLM中的强化学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#nlp%E4%BB%BB%E5%8A%A1%E4%B8%ADagentenvstateaction"><span class="toc-number">7.1.</span> <span class="toc-text">7.1
-NLP任务中Agent、Env、State、Action</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rlhf%E4%B8%AD%E5%9B%9B%E4%B8%AA%E9%87%8D%E8%A6%81%E8%A7%92%E8%89%B2"><span class="toc-number">7.2.</span> <span class="toc-text">7.2 RLHF中四个重要角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#actor-model"><span class="toc-number">7.2.1.</span> <span class="toc-text">7.2.1 Actor Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reference-model%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B"><span class="toc-number">7.2.2.</span> <span class="toc-text">7.2.2 Reference Model（参考模型）</span></a></li></ol></li></ol></li></ol>
+NLP任务中Agent、Env、State、Action</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rlhf%E4%B8%AD%E5%9B%9B%E4%B8%AA%E9%87%8D%E8%A6%81%E8%A7%92%E8%89%B2"><span class="toc-number">7.2.</span> <span class="toc-text">7.2 RLHF中四个重要角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#actor-model"><span class="toc-number">7.2.1.</span> <span class="toc-text">7.2.1 Actor Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reference-model%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B"><span class="toc-number">7.2.2.</span> <span class="toc-text">7.2.2 Reference Model（参考模型）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#critic-model%E8%AF%84%E8%AE%BA%E5%AE%B6%E6%A8%A1%E5%9E%8B"><span class="toc-number">7.2.3.</span> <span class="toc-text">7.2.3 Critic Model(评论家模型)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reward-model%E5%A5%96%E5%8A%B1%E6%A8%A1%E5%9E%8B"><span class="toc-number">7.2.4.</span> <span class="toc-text">7.2.4 Reward Model（奖励模型）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rlhf-%E4%B8%AD%E7%9A%84-loss-%E8%AE%A1%E7%AE%97"><span class="toc-number">7.3.</span> <span class="toc-text">7.3 RLHF 中的 loss 计算</span></a></li></ol></li></ol>
       </div>
     
   </span>
@@ -455,6 +455,45 @@ class="math inline">−𝔼<sub><em>P</em></sub>[log <em>Q</em>(<em>x</em>)]</
 <p>所以：👉 <strong>KL 散度 = 交叉熵 −
 信息熵</strong>，这也是深度学习里用交叉熵做损失的原因：真实分布熵固定，最小化交叉熵
 = 等价于最小化 KL 散度 = 让模型分布贴近真实分布</p>
+<h3 id="critic-model评论家模型">7.2.3 Critic Model(评论家模型)</h3>
+<p><strong>Critic Model:</strong> 用于预测期望总收益 <span
+class="math inline"><em>V</em><sub><em>t</em></sub></span> ，和
+<strong>Actor</strong> 模型一样，它需要做参数更新。实践中，Critic
+Model的设计和初始化
+方式也有很多种，例如和Actor共享部分参数、从RW阶段的Reward
+Model初始化而来等等。此处做笔记时和deepspeed-chat的实现保持一致：从RW阶段的Reward
+Model初始化而来。</p>
+<p>==训练Actor模型我能理解，为什么要单独训练一个Critic模型用于预测收益呢？==
+&gt;这是因为，在前文讨论总收益 <span
+class="math inline"><em>V</em><sub><em>t</em></sub></span>（即时 +
+未来）时，是站在上帝视角的，也就是这个 <span
+class="math inline"><em>V</em><sub><em>t</em></sub></span>
+就是客观存在的、真正的总收益，但是很难计算得到。但是在训练模型时，没有上帝视角，也就是在
+<span class="math inline"><em>t</em></span> 时刻，给不出客观存在的总收益
+<span class="math inline"><em>V</em><sub><em>t</em></sub></span>
+，只能训练一个模型去预测它。</p>
+<p><strong>总的来说，在RLHF阶段，不仅需要训练模型生成复合人类喜好的内容的能力（Actor），也要提升模型对人类喜好量化判断的能力（Critic）。</strong>
+<img
+src="https://i-blog.csdnimg.cn/img_convert/15ae090ee8f9636259133c0fa10d6b6e.jpeg"
+alt="img" /></p>
+<h3 id="reward-model奖励模型">7.2.4 Reward Model（奖励模型）</h3>
+<p>Reward Model用于计算生成token At
+的即时收益，它就是RW阶段所训练的奖励模型，在RLHF过程中，它的参数是冻结的。</p>
+<p>为什么Critic模型要参与训练，而同样是和收益相关的Reward模型的参数就可以冻结呢？
+这是因为，Reward模型是站在上帝视角的。这个上帝视角有两层含义： -
+第一点，Reward
+模型是经过和“估算收益”相关的训练的，因此在RLHF阶段它可以直接被当作一个能产生客观值的模型。
+- 第二点，Reward 模型代表的含义就是“即时收益”，你的token <span
+class="math inline"><em>A</em><sub><em>t</em></sub></span>
+已经产生，因此即时收益自然可以立刻算出。</p>
+<p><strong>一句话总结这 4 个模型在 Step 3 的关系：</strong><br />
+Actor 在疯狂做题（写回答），Reference 在旁边拉着 Actor
+的衣角（防止它说话不像正常人类），Critic
+在做题过程中不断预测能拿多少分，而 Reward Model 坐在评委席上，等 Actor
+写完后，盖上最终的分数印章（‭<span
+class="math inline"><em>R</em></span>‬），并把成绩单甩给 Actor 和 Critic
+去做各自的反思与更新。</p>
+<h2 id="rlhf-中的-loss-计算">7.3 RLHF 中的 loss 计算</h2>
 
   </div>
 </article>
@@ -483,7 +522,7 @@ class="math inline">−𝔼<sub><em>P</em></sub>[log <em>Q</em>(<em>x</em>)]</
     
       <div id="toc-footer" style="display: none">
         <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.</span> <span class="toc-text">1. 核心思想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 强化学习基础回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E6%84%8F%E4%B9%89"><span class="toc-number">1.2.</span> <span class="toc-text">1.3 参数化意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#policy-gradient%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.3.</span> <span class="toc-text">1.4 Policy Gradient的核心思想</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF"><span class="toc-number">2.</span> <span class="toc-text">2. 优势</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#policy-gradient-%E5%AE%9A%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">3. Policy Gradient 定理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 推导过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5g_t"><span class="toc-number">4.</span> <span class="toc-text">4. 折扣未来回报Gt</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%98%E6%89%A3%E6%9C%AA%E6%9D%A5%E5%9B%9E%E6%8A%A5%E6%95%B0%E5%AD%A6%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">4. 1 折扣未来回报数学定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%8A%98%E6%89%A3%E5%9B%A0%E5%AD%90"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 为什么需要折扣因子</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reinforce%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">5. REINFORCE算法原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#reinforce%E6%9B%B4%E6%96%B0%E5%85%AC%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 REINFORCE更新公式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0vs%E4%B8%8E%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.</span> <span class="toc-text">6. 价值函数（V(s)）与贝尔曼方程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E4%BB%B7%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 状态价值函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%9D%97%E7%90%86%E8%A7%A3%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 分块理解贝尔曼方程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#llm%E4%B8%AD%E7%9A%84%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0"><span class="toc-number">7.</span> <span class="toc-text">7. LLM中的强化学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#nlp%E4%BB%BB%E5%8A%A1%E4%B8%ADagentenvstateaction"><span class="toc-number">7.1.</span> <span class="toc-text">7.1
-NLP任务中Agent、Env、State、Action</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rlhf%E4%B8%AD%E5%9B%9B%E4%B8%AA%E9%87%8D%E8%A6%81%E8%A7%92%E8%89%B2"><span class="toc-number">7.2.</span> <span class="toc-text">7.2 RLHF中四个重要角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#actor-model"><span class="toc-number">7.2.1.</span> <span class="toc-text">7.2.1 Actor Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reference-model%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B"><span class="toc-number">7.2.2.</span> <span class="toc-text">7.2.2 Reference Model（参考模型）</span></a></li></ol></li></ol></li></ol>
+NLP任务中Agent、Env、State、Action</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rlhf%E4%B8%AD%E5%9B%9B%E4%B8%AA%E9%87%8D%E8%A6%81%E8%A7%92%E8%89%B2"><span class="toc-number">7.2.</span> <span class="toc-text">7.2 RLHF中四个重要角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#actor-model"><span class="toc-number">7.2.1.</span> <span class="toc-text">7.2.1 Actor Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reference-model%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B"><span class="toc-number">7.2.2.</span> <span class="toc-text">7.2.2 Reference Model（参考模型）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#critic-model%E8%AF%84%E8%AE%BA%E5%AE%B6%E6%A8%A1%E5%9E%8B"><span class="toc-number">7.2.3.</span> <span class="toc-text">7.2.3 Critic Model(评论家模型)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reward-model%E5%A5%96%E5%8A%B1%E6%A8%A1%E5%9E%8B"><span class="toc-number">7.2.4.</span> <span class="toc-text">7.2.4 Reward Model（奖励模型）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rlhf-%E4%B8%AD%E7%9A%84-loss-%E8%AE%A1%E7%AE%97"><span class="toc-number">7.3.</span> <span class="toc-text">7.3 RLHF 中的 loss 计算</span></a></li></ol></li></ol>
       </div>
     
 
